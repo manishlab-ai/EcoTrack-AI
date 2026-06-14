@@ -1,0 +1,379 @@
+/* EcoTrack Desktop Stylesheet */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+header h1 {
+    color: #667eea;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+header p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+/* Navigation Styles */
+nav {
+    background: white;
+    padding: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+nav li {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+}
+
+nav a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+}
+
+nav a:hover,
+nav a.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom-color: #fff;
+}
+
+/* Main Content */
+main {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+main h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+/* Dashboard Styles */
+.dashboard {
+    width: 100%;
+}
+
+.device-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.device-item {
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.device-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+    border-left-color: #764ba2;
+}
+
+.device-item h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.device-item p {
+    color: #555;
+    font-size: 0.95em;
+    margin: 8px 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Stats Section */
+.stats {
+    margin-top: 30px;
+}
+
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.stat-card h3 {
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.stat-value {
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+/* Map Tracker Styles */
+.map-container {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    min-height: 600px;
+}
+
+.map-display {
+    background: linear-gradient(135deg, #e8edf5 0%, #f5e6ff 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    border: 2px solid #e0e0e0;
+}
+
+.map-display canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.device-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.device-info h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+    font-size: 1.1em;
+}
+
+.details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.details-list p {
+    color: #555;
+    font-size: 0.9em;
+    margin: 5px 0;
+}
+
+.device-list-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.device-list-sidebar .device-item-small {
+    background: white;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #667eea;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+.device-list-sidebar .device-item-small:hover {
+    background: #f0f2f5;
+    transform: translateX(5px);
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 30px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-size: 0.95em;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .map-container {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    
+    .device-info {
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    nav ul {
+        flex-direction: column;
+    }
+    
+    nav li {
+        min-width: 100%;
+    }
+    
+    .device-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    main {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 15px;
+    }
+    
+    header h1 {
+        font-size: 1.4em;
+    }
+    
+    header p {
+        font-size: 0.9em;
+    }
+    
+    nav a {
+        padding: 10px 8px;
+        font-size: 0.85em;
+    }
+    
+    main {
+        padding: 10px;
+    }
+    
+    main h2 {
+        font-size: 1.3em;
+    }
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}

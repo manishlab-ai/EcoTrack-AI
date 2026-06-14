@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack - Environmental Tracking System</title>
+    <link rel="stylesheet" href="css/desktop.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 EcoTrack</h1>
+            <p>Environmental Device Tracking & Monitoring System</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">📊 Dashboard</a></li>
+                <li><a href="pages/map-tracker.html">🗺️ Map Tracker</a></li>
+                <li><a href="#">⚙️ Settings</a></li>
+                <li><a href="#">ℹ️ About</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <section class="dashboard">
+                <h2>Device Status</h2>
+                <div id="device-list" class="device-list">
+                    <p style="text-align: center; color: #666;">Loading devices...</p>
+                </div>
+            </section>
+            
+            <section class="stats">
+                <h2>Statistics</h2>
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <h3>Active Devices</h3>
+                        <p id="active-count" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Devices</h3>
+                        <p id="total-count" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Battery Average</h3>
+                        <p id="battery-avg" class="stat-value">0%</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 EcoTrack-AI. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="app-js/device-tracker.js"></script>
+</body>
+</html>
