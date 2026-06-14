@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Tracker - EcoTrack</title>
+    <link rel="stylesheet" href="../css/desktop.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗺️ EcoTrack Map Tracker</h1>
+            <p>Real-time Device Location Tracking</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="../index.html">📊 Dashboard</a></li>
+                <li><a href="map-tracker.html" class="active">🗺️ Map Tracker</a></li>
+                <li><a href="#">⚙️ Settings</a></li>
+                <li><a href="#">ℹ️ About</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <section class="map-container">
+                <div id="map" class="map-display">
+                    <!-- Map will be rendered here -->
+                </div>
+                
+                <aside class="device-info">
+                    <h3>Device Information</h3>
+                    <div id="device-details" class="details-list">
+                        <p style="color: #999;">Select a device on the map</p>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">Device List</h3>
+                    <div id="device-list-sidebar" class="device-list-sidebar">
+                        <p style="color: #999;">Loading devices...</p>
+                    </div>
+                </aside>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 EcoTrack-AI. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="../app-js/device-tracker.js"></script>
+    <script src="../app-js/map.js"></script>
+</body>
+</html>
