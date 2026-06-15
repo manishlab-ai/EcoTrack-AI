@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EcoTrack AI — Sentinel-Logic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+/* ═══ CSS VARS ═══ */
+:root{--cyan:#00d4ff;--cyan-dim:#00d4ff22;--green:#00cc77;--red:#ff3344;--orange:#ff8800;--purple:#cc44ff;--yellow:#ffcc00;--tr:all .3s cubic-bezier(.4,0,.2,1)}
+[data-theme="dark"]{--bg:#06101e;--bg2:#091525;--bg3:#0c1d30;--sur:#0d1e35;--brd:#1a2e46;--brd2:#0f2035;--hi:#e0f0ff;--mid:#8aaccc;--lo:#3a5a7a;--inp:#040d18;--card:linear-gradient(135deg,#0d1e35,#091828);--top:linear-gradient(180deg,#0c1f35,#091525);--tab:linear-gradient(180deg,#091525,#07101c);--sb:linear-gradient(180deg,#0c1d30,#091525);--mod:linear-gradient(135deg,#0d1e35,#091525);--sbh:linear-gradient(180deg,#0f2035,#0c1a2e);--bbg:radial-gradient(ellipse at 20% 0%,#0a1f35 0%,#06101e 60%);--sop:.3}
+[data-theme="light"]{--bg:#f2f6fb;--bg2:#e8f0fa;--bg3:#dce8f5;--sur:#fff;--brd:#c2d4eb;--brd2:#d4e2f2;--hi:#0d1a30;--mid:#2e5080;--lo:#7090b8;--inp:#fff;--card:linear-gradient(135deg,#fff,#f2f6fb);--top:linear-gradient(180deg,#fff,#f2f6fb);--tab:linear-gradient(180deg,#f2f6fb,#e8f0fa);--sb:linear-gradient(180deg,#fff,#f2f6fb);--mod:linear-gradient(135deg,#fff,#f2f6fb);--sbh:linear-gradient(180deg,#f2f6fb,#e8f0fa);--bbg:radial-gradient(ellipse at 20% 0%,#d5e5ff 0%,#f2f6fb 60%);--sop:.04}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ═══ RESPONSIVE LAYOUT ═══ */
+body{font-family:'Inter',sans-serif;background:var(--bbg);background-color:var(--bg);display:flex;justify-content:center;align-items:flex-start;padding:24px 16px;min-height:100vh;position:relative;transition:background .4s}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#00d4ff18 1px,transparent 1px);background-size:40px 40px;pointer-events:none;opacity:var(--sop)}
+
+/* PHONE frame — mobile/tablet */
+.phone-frame{width:390px;background:var(--bg);border-radius:40px;border:2px solid var(--brd);overflow:hidden;position:relative;min-height:780px;display:flex;flex-direction:column;box-shadow:0 0 0 1px var(--brd2),0 0 60px #00d4ff18,0 30px 80px #00000044,inset 0 1px 0 var(--brd)}
+
+/* DESKTOP — landscape */
+@media(min-width:1025px){
+  body{align-items:center;padding:0;min-height:100vh;flex-direction:column;justify-content:center}
+  .phone-frame{width:100%;max-width:100%;border-radius:0;border:none;min-height:100vh;flex-direction:row;flex-wrap:nowrap;overflow:hidden}
+  .app{flex-direction:row!important;width:100%}
+  /* Left sidebar on desktop */
+  .desktop-nav{display:flex!important;flex-direction:column;width:220px;min-height:100vh;background:var(--sb);border-right:1px solid var(--brd);flex-shrink:0;padding:20px 0}
+  .screen{flex-direction:row;min-height:100vh!important}
+  .screen .topbar{display:none!important} /* hide mobile topbar on desktop */
+  .screen .top-tab-bar{display:none!important}
+  .screen .bottom-tab-bar{display:none!important}
+  .desktop-footer{display:flex!important}
+}
+@media(max-width:1024px){
+  .desktop-nav{display:none!important}
+  .desktop-footer{display:none!important}
+  body{align-items:flex-start;padding:24px 16px}
+}
+@media(max-width:430px){body{padding:0}.phone-frame{width:100%;border-radius:0;border:none;min-height:100vh}}
+@media(min-width:431px) and (max-width:768px){body{padding:12px 8px}.phone-frame{width:100%;max-width:430px;border-radius:24px}}
+@media(min-width:769px) and (max-width:1024px){body{align-items:center;padding:40px 16px}.phone-frame{width:390px}}
+
+/* DESKTOP NAV */
+.desktop-nav{display:none;position:relative;z-index:10}
+.dn-logo{display:flex;align-items:center;gap:10px;padding:16px 20px 20px;border-bottom:1px solid var(--brd2)}
+.dn-logo svg{width:36px;height:36px;filter:drop-shadow(0 0 6px #00d4ff66)}
+.dn-brand{font-size:14px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;letter-spacing:.5px}
+.dn-sub{font-size:9px;color:var(--lo)}
+.dn-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;font-size:12px;font-weight:500;color:var(--mid);border-left:3px solid transparent;transition:all .2s}
+.dn-item:hover,.dn-item.active{background:linear-gradient(90deg,#00d4ff0a,transparent);color:var(--cyan);border-left-color:var(--cyan)}
+.dn-item i{font-size:18px;width:22px;flex-shrink:0}
+.dn-section{font-size:9px;color:var(--lo);letter-spacing:.8px;padding:10px 20px 4px;text-transform:uppercase}
+.dn-health{margin:12px 16px;background:#001628;border:1px solid #00d4ff22;border-radius:8px;padding:8px 12px}
+.dn-logout{margin:0 16px;width:calc(100% - 32px);padding:10px;border-radius:9px;background:linear-gradient(135deg,#2a0808,#1e0606);border:1px solid #cc222233;color:var(--red);cursor:pointer;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Inter',sans-serif;transition:all .2s;margin-top:auto}
+.dn-logout:hover{box-shadow:0 4px 12px #cc222222}
+.dn-footer{font-size:9px;color:var(--lo);text-align:center;padding:10px 16px 16px;letter-spacing:.3px}
+/* Desktop footer tag */
+.desktop-footer{display:none;width:100%;padding:10px 0;text-align:center;font-size:11px;color:var(--lo);letter-spacing:.4px;background:var(--bg2);border-top:1px solid var(--brd2);position:fixed;bottom:0;left:0;z-index:5}
+.desktop-footer span{color:var(--cyan);font-weight:500}
+
+/* ═══ CORE APP ═══ */
+.app{background:transparent;color:var(--hi);width:100%;flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;min-height:700px;animation:fadeIn .25s ease}
+.screen.active{display:flex}
+.desktop-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #00d4ff33}50%{box-shadow:0 0 0 10px transparent}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes scanline{0%{top:-100%}100%{top:110%}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes scaleIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fingerPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.15);opacity:1}}
+@keyframes radarPing{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+
+/* ═══ TOPBAR ═══ */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--top);border-bottom:1px solid var(--brd2);flex-shrink:0;position:relative;overflow:hidden;transition:var(--tr)}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff55,transparent)}
+.logo-row{display:flex;align-items:center;gap:10px}
+.eco-logo-svg{width:36px;height:36px;filter:drop-shadow(0 0 6px #00d4ff66);animation:floatY 3s ease-in-out infinite;flex-shrink:0}
+.logo-name{font-size:13px;font-weight:600;color:var(--hi);font-family:'Rajdhani',sans-serif;letter-spacing:.5px}
+.logo-sub{font-size:9px;color:var(--lo);letter-spacing:.3px}
+.topbar-r{display:flex;align-items:center;gap:8px}
+.health-pill{background:linear-gradient(135deg,#001a0e,#002918);border:1px solid #00cc7744;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:500;color:var(--green);display:flex;align-items:center;gap:4px;box-shadow:0 0 10px #00cc7722}
+[data-theme="light"] .health-pill{background:linear-gradient(135deg,#e8fff2,#d0f5e8)}
+.icon-btn{background:none;border:none;color:var(--lo);cursor:pointer;padding:4px;border-radius:8px;transition:color .2s,background .2s}
+.icon-btn:hover{color:var(--cyan);background:#00d4ff12}
+.icon-btn i{font-size:20px}
+
+/* ═══ TAB BAR (top) ═══ */
+.top-tab-bar{display:none!important}
+/* ═══ BOTTOM TAB BAR ═══ */
+.bottom-tab-bar{display:flex;background:var(--tab);border-top:1px solid var(--brd2);flex-shrink:0;position:relative;z-index:20}
+.bottom-tab-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff33,transparent)}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 8px;background:none;border:none;border-top:2px solid transparent;color:var(--lo);cursor:pointer;font-size:10px;font-weight:500;letter-spacing:.2px;transition:color .2s,border-color .2s,background .2s;font-family:'Inter',sans-serif}
+.tab-btn:hover{color:var(--mid)}
+.tab-btn.active{color:var(--cyan);border-top-color:var(--cyan);background:linear-gradient(180deg,#00d4ff08,transparent)}
+.tab-btn i{font-size:19px}
+
+/* ═══ SCROLL / PAD ═══ */
+.scroll{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:#1a2d4a transparent}
+.scroll::-webkit-scrollbar{width:3px}
+.scroll::-webkit-scrollbar-thumb{background:#1a2d4a;border-radius:2px}
+.pad{padding:14px 16px}
+
+/* ═══ CARD ═══ */
+.card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.card:hover{border-color:#2a3e58;box-shadow:0 4px 20px #00000033}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff22,transparent)}
+.card-title{font-size:11px;font-weight:600;color:var(--mid);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
+.card-title i{font-size:15px;color:var(--cyan)}
+
+/* ═══ SENTINEL STATUS BAR (TOP) ═══ */
+.sentinel-top-bar{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#001828,#001220);border-bottom:1px solid #00d4ff22;padding:7px 16px;flex-shrink:0}
+[data-theme="light"] .sentinel-top-bar{background:linear-gradient(135deg,#e0f4ff,#d0ecf8);border-bottom-color:#00d4ff44}
+.stb-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid)}
+.stb-item i{font-size:13px;color:var(--cyan)}
+.stb-dot{width:7px;height:7px;border-radius:50%;box-shadow:0 0 5px currentColor}
+.stb-dot.online{background:var(--green);color:var(--green);animation:blink 2s infinite}
+.stb-dot.offline{background:var(--red);color:var(--red)}
+
+/* ═══ MAP ═══ */
+.map-box{height:190px;background:#040d18;border-radius:12px;margin-bottom:10px;position:relative;overflow:hidden;border:1px solid #1a2d4a}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(var(--cyan) 1px,transparent 1px),linear-gradient(90deg,var(--cyan) 1px,transparent 1px);background-size:28px 28px;opacity:.06}
+.map-scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.4;animation:scanline 4s linear infinite}
+.map-label{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#0b1628cc;border:1px solid #1a3a5a;border-radius:6px;padding:3px 12px;font-size:10px;color:var(--cyan);white-space:nowrap;backdrop-filter:blur(8px);display:flex;align-items:center;gap:4px}
+.map-sos{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#cc1122,#aa0011);border-radius:6px;padding:3px 8px;font-size:9px;color:#fff;font-weight:600;letter-spacing:.4px;animation:blink 1.4s infinite;box-shadow:0 0 10px #cc112244}
+.map-mic{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#00d4ff1a,#00d4ff08);border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 18px #00d4ff44;animation:pulse 2s infinite;transition:transform .15s}
+.map-mic:hover{transform:translateX(-50%) scale(1.08)}
+.map-mic i{font-size:22px;color:var(--cyan)}
+.map-pin{position:absolute;filter:drop-shadow(0 0 4px currentColor)}
+.zoom-col{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:5px}
+.zoom-b{width:28px;height:28px;background:#0b1628cc;border:1px solid #1a2d4a;border-radius:7px;color:var(--hi);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);transition:border-color .2s,color .2s}
+.zoom-b:hover{border-color:var(--cyan);color:var(--cyan)}
+/* Online/Offline tabs on map */
+.map-mode-tabs{display:flex;background:#0a1628cc;border:1px solid #1a2d4a;border-radius:8px;overflow:hidden;margin-bottom:8px;backdrop-filter:blur(8px)}
+.mmt-btn{flex:1;padding:7px;font-size:10px;font-weight:600;border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.3px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.mmt-btn.active.online{background:linear-gradient(135deg,#003322,#00cc7722);color:var(--green)}
+.mmt-btn.active.offline{background:linear-gradient(135deg,#330011,#ff334422);color:var(--red)}
+.mmt-btn:not(.active){color:var(--lo)}
+.mmt-btn i{font-size:13px}
+/* Map overlay panels */
+.map-overlay{position:absolute;inset:0;display:none;flex-direction:column;padding:10px;background:#040d18ee;backdrop-filter:blur(4px);z-index:10}
+.map-overlay.show{display:flex;animation:fadeIn .2s ease}
+.mo-close{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--lo);cursor:pointer;font-size:18px}
+.mo-close:hover{color:var(--hi)}
+
+/* ONLINE TRACKER */
+.find-device-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:center}
+.radar-wrap{position:relative;width:90px;height:90px;display:flex;align-items:center;justify-content:center}
+.radar-ring{position:absolute;width:100%;height:100%;border-radius:50%;border:2px solid var(--cyan);opacity:0;animation:radarPing 2s ease-out infinite}
+.radar-ring:nth-child(2){animation-delay:.6s}
+.radar-ring:nth-child(3){animation-delay:1.2s}
+.radar-center{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#003344,#00d4ff18);border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;z-index:1;box-shadow:0 0 18px #00d4ff44}
+.radar-center i{font-size:18px;color:var(--cyan)}
+.find-status{font-size:10px;color:var(--cyan);text-align:center;animation:blink 1.5s infinite}
+.find-coords{font-size:9px;color:var(--lo);text-align:center;font-family:'Rajdhani',sans-serif}
+.find-btn{padding:6px 16px;border-radius:8px;background:linear-gradient(135deg,#003344,#00d4ff18);border:1px solid #00d4ff44;color:var(--cyan);font-size:10px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px}
+
+/* OFFLINE TRACKER */
+.offline-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:center}
+.ble-ring-wrap{position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center}
+.ble-ring{position:absolute;width:100%;height:100%;border-radius:50%;border:2px solid var(--orange);opacity:0;animation:radarPing 2.5s ease-out infinite}
+.ble-ring:nth-child(2){animation-delay:1s}
+.ble-center{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a0800,#ff880018);border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;z-index:1;box-shadow:0 0 14px #ff880044}
+.ble-center i{font-size:16px;color:var(--orange)}
+.ble-hot-cold{font-size:11px;font-weight:700;letter-spacing:.5px}
+.ble-dist{font-size:9px;color:var(--lo);text-align:center}
+.offline-note{font-size:9px;color:var(--lo);text-align:center;line-height:1.4;max-width:200px;padding:4px 8px;background:#00000033;border-radius:6px;border:1px solid var(--brd2)}
+
+/* ALERT GRID */
+.alert-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.alert-c{border-radius:12px;padding:12px 10px;border:1px solid;position:relative;overflow:hidden;transition:transform .2s}
+.alert-c:hover{transform:translateY(-2px)}
+.alert-c.r{background:linear-gradient(135deg,#160510,#0e030a);border-color:#cc223344;box-shadow:0 0 20px #cc223318}
+.alert-c.y{background:linear-gradient(135deg,#160f00,#0e0900);border-color:#ccaa0044;box-shadow:0 0 20px #ccaa0018}
+[data-theme="light"] .alert-c.r{background:linear-gradient(135deg,#fff0f2,#ffe4e8)}
+[data-theme="light"] .alert-c.y{background:linear-gradient(135deg,#fffbe0,#fff5c0)}
+.atitle{font-size:8px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;text-transform:uppercase}
+.atitle.r{color:#ff5566}.atitle.y{color:#ffcc00}
+.abig{font-size:20px;font-weight:700}.abig.r{color:#ff3344}.abig.y{color:#ffcc00}
+.asub{font-size:9px;color:#4a6a8a;margin-top:2px}
+.astatus{font-size:10px;font-weight:600;margin-top:3px;animation:blink 1.4s infinite}
+.astatus.r{color:#ff5566}.astatus.y{color:#ffcc00}
+
+/* ACTION GRID */
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.act-btn{border-radius:12px;padding:14px 8px;border:1px solid;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;font-size:10px;font-weight:600;letter-spacing:.4px;transition:all .2s;font-family:'Inter',sans-serif;position:relative;overflow:hidden}
+.act-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#ffffff08,transparent);opacity:0;transition:opacity .2s}
+.act-btn:hover{transform:translateY(-2px)}.act-btn:hover::after{opacity:1}
+.act-btn:active{transform:scale(.97)}
+.act-btn i{font-size:22px}
+.act-btn.cy{border-color:#00d4ff44;color:var(--cyan);background:#00d4ff08}
+.act-btn.gr{border-color:#00cc7744;color:var(--green);background:#00cc7708}
+.act-btn.or{border-color:#ff880044;color:var(--orange);background:#ff880008}
+.act-btn.re{border-color:#ff334444;color:var(--red);background:#ff334408}
+.act-btn:hover.cy{box-shadow:0 0 20px #00d4ff22}
+.act-btn:hover.gr{box-shadow:0 0 20px #00cc7722}
+.act-btn:hover.or{box-shadow:0 0 20px #ff880022}
+.act-btn:hover.re{box-shadow:0 0 20px #ff334422}
+
+/* GAUGE */
+.gauge-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.gauge-c{background:linear-gradient(180deg,#040d18,#060f1c);border-radius:10px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid var(--brd2)}
+[data-theme="light"] .gauge-c{background:linear-gradient(180deg,#edf4ff,#e2eef9)}
+.gauge-label{font-size:9px;color:var(--lo);text-transform:uppercase;letter-spacing:.4px}
+.gauge-num{font-size:24px;font-weight:700;color:var(--cyan);font-family:'Rajdhani',sans-serif}
+.gauge-sub{font-size:9px;color:var(--lo);text-align:center}
+.gauge-bar{width:100%;height:4px;background:#1a2d4a;border-radius:3px;overflow:hidden}
+[data-theme="light"] .gauge-bar{background:#c8d8f0}
+.gauge-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.gf-cy{background:linear-gradient(90deg,#0088aa,#00d4ff)}
+.gf-gr{background:linear-gradient(90deg,#008844,#00cc77)}
+.gf-or{background:linear-gradient(90deg,#995500,#ff8800)}
+.gf-re{background:linear-gradient(90deg,#991122,#ff3344)}
+.gf-pu{background:linear-gradient(90deg,#882299,#cc44ff)}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.stat-c{background:#040d18;border-radius:9px;padding:10px;border:1px solid var(--brd2);transition:border-color .2s}
+[data-theme="light"] .stat-c{background:#edf4ff}
+.stat-c:hover{border-color:var(--brd)}
+.stat-lbl{font-size:9px;color:var(--lo);display:flex;align-items:center;gap:4px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.stat-lbl i{font-size:13px}
+.stat-val{font-size:16px;font-weight:700;font-family:'Rajdhani',sans-serif}
+.sv-cy{color:var(--cyan)}.sv-gr{color:var(--green)}.sv-or{color:var(--orange)}.sv-re{color:var(--red)}.sv-wh{color:var(--hi)}.sv-pu{color:var(--purple)}
+
+/* DEV CARD */
+.dev-card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden}
+.dev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff22,transparent)}
+.dev-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.dev-name{font-size:14px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;letter-spacing:.5px}
+.dev-id{font-size:9px;color:var(--lo);margin-top:2px}
+.status-pill{font-size:9px;padding:4px 10px;border-radius:20px;font-weight:600;letter-spacing:.4px}
+.sp-on{background:#00cc7714;color:var(--green);border:1px solid #00cc7733}
+.sp-al{background:#ff334414;color:var(--red);border:1px solid #ff334433;animation:blink 1.4s infinite}
+.sp-wr{background:#ffcc0014;color:var(--yellow);border:1px solid #ffcc0033}
+.tele-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.tele-c{background:#040d18;border-radius:8px;padding:8px 10px;border:1px solid var(--brd2)}
+[data-theme="light"] .tele-c{background:#edf4ff}
+.tele-lbl{font-size:8px;color:var(--lo);text-transform:uppercase;letter-spacing:.3px}
+.tele-val{font-size:15px;font-weight:700;margin-top:3px;font-family:'Rajdhani',sans-serif}
+.dev-acts{display:flex;gap:8px}
+.mini-b{flex:1;padding:8px 6px;border-radius:9px;border:1px solid;background:none;font-size:9px;font-weight:600;letter-spacing:.3px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .2s;font-family:'Inter',sans-serif}
+.mini-b:hover{transform:translateY(-1px)}
+.mini-b i{font-size:14px}
+.mb-cy{border-color:#00d4ff44;color:var(--cyan)}.mb-cy:hover{background:#00d4ff14}
+.mb-or{border-color:#ff880044;color:var(--orange)}.mb-or:hover{background:#ff880014}
+.mb-re{border-color:#ff334444;color:var(--red)}.mb-re:hover{background:#ff334414}
+.dev-map{height:70px;background:#040d18;border-radius:9px;margin-bottom:10px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--brd2)}
+.dev-map-grid{position:absolute;inset:0;background-image:linear-gradient(var(--cyan) 1px,transparent 1px),linear-gradient(90deg,var(--cyan) 1px,transparent 1px);background-size:18px 18px;opacity:.06}
+
+/* ROUTINE */
+.routine-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--brd2);transition:all .2s}
+.routine-item:last-child{border-bottom:none}
+.routine-item:hover{background:#ffffff03;border-radius:8px;padding-left:6px;padding-right:6px}
+.ri-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ri-icon i{font-size:18px}
+.ri-w{background:linear-gradient(135deg,#001628,#001a33)}.ri-w i{color:var(--cyan)}
+.ri-f{background:linear-gradient(135deg,#160010,#1a0018)}.ri-f i{color:var(--purple)}
+.ri-h{background:linear-gradient(135deg,#001610,#001a12)}.ri-h i{color:var(--green)}
+.ri-c{background:linear-gradient(135deg,#161000,#1a1300)}.ri-c i{color:var(--orange)}
+[data-theme="light"] .ri-w{background:linear-gradient(135deg,#ddeeff,#cce8ff)}
+[data-theme="light"] .ri-f{background:linear-gradient(135deg,#f0ddff,#e8ccff)}
+[data-theme="light"] .ri-h{background:linear-gradient(135deg,#ddffee,#ccffe8)}
+[data-theme="light"] .ri-c{background:linear-gradient(135deg,#fff0dd,#ffe8cc)}
+.ri-info{flex:1}
+.ri-name{font-size:12px;font-weight:600;color:var(--hi)}
+.ri-time{font-size:10px;color:var(--lo);margin-top:2px}
+.tog{width:38px;height:20px;border-radius:10px;border:none;cursor:pointer;position:relative;flex-shrink:0;transition:all .25s}
+.tog.on{background:linear-gradient(90deg,#006688,#00d4ff);box-shadow:0 0 8px #00d4ff44}
+.tog.on::after{content:'';position:absolute;right:2px;top:2px;width:14px;height:14px;background:#fff;border-radius:50%}
+.tog.off{background:#1a2d4a;border:1px solid #2a3d5a}
+.tog.off::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;background:#4a6a9a;border-radius:50%}
+[data-theme="light"] .tog.off{background:#c8d8f0}
+[data-theme="light"] .tog.off::after{background:#8aaacf}
+
+/* LOGS */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--brd2)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;box-shadow:0 0 6px currentColor}
+.ld-gr{background:var(--green);color:var(--green)}.ld-re{background:var(--red);color:var(--red)}.ld-cy{background:var(--cyan);color:var(--cyan)}.ld-or{background:var(--orange);color:var(--orange)}
+.log-ev{font-size:11px;color:#b0c8e0;line-height:1.4}
+[data-theme="light"] .log-ev{color:#2e5080}
+.log-t{font-size:9px;color:var(--lo);margin-top:2px}
+
+/* SIDEBAR */
+.sidebar-overlay{position:absolute;inset:0;background:linear-gradient(to right,#000000cc,#00000066);z-index:50;display:none;backdrop-filter:blur(2px)}
+.sidebar-overlay.open{display:block}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:245px;background:var(--sb);border-right:1px solid var(--brd);z-index:60;transform:translateX(-100%);transition:transform .28s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column}
+.sidebar.open{transform:translateX(0);box-shadow:10px 0 30px #00000077}
+.sb-head{padding:20px 16px 14px;border-bottom:1px solid var(--brd2);background:var(--sbh)}
+.sb-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#0a2240,#001830);border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px #00d4ff33}
+.sb-avatar i{font-size:21px;color:var(--cyan)}
+.sb-uname{font-size:13px;font-weight:600;color:var(--hi)}
+.sb-email{font-size:10px;color:var(--lo)}
+.sb-menu{flex:1;padding:8px 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;font-size:12px;font-weight:500;color:var(--mid);border-left:3px solid transparent;transition:all .2s}
+.sb-item:hover,.sb-item.active{background:linear-gradient(90deg,#00d4ff0a,transparent);color:var(--cyan);border-left-color:var(--cyan)}
+.sb-item i{font-size:18px;width:22px;flex-shrink:0}
+.sb-badge{margin-left:auto;background:#ff334418;color:var(--red);border:1px solid #ff334433;border-radius:10px;padding:1px 7px;font-size:9px;font-weight:600}
+.sb-section{font-size:9px;color:var(--lo);letter-spacing:.8px;padding:10px 16px 5px;text-transform:uppercase}
+.sb-foot{padding:12px 16px;border-top:1px solid var(--brd2)}
+.sb-logout{width:100%;padding:10px;border-radius:9px;background:linear-gradient(135deg,#2a0808,#1e0606);border:1px solid #cc222233;color:var(--red);cursor:pointer;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Inter',sans-serif;transition:all .2s}
+.sb-logout:hover{background:linear-gradient(135deg,#3a0a0a,#2e0808)}
+
+/* AUTH SCREENS */
+.login-wrap{display:flex;flex-direction:column;min-height:700px;background:var(--bg2);padding:28px 22px 22px;position:relative;overflow:hidden}
+.login-wrap::before{content:'';position:absolute;top:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,#00d4ff08,transparent 70%);pointer-events:none}
+.login-logo{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
+.login-logo-svg{width:80px;height:80px;filter:drop-shadow(0 0 20px #00d4ff55);animation:floatY 3s ease-in-out infinite}
+.login-brand{font-size:22px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;letter-spacing:1px}
+.login-tagline{font-size:10px;color:var(--lo);text-align:center;letter-spacing:.4px;line-height:1.5}
+.login-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:20px;box-shadow:0 8px 32px #00000033;position:relative;margin-bottom:14px}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff33,transparent)}
+.login-title{font-size:15px;font-weight:600;color:var(--hi);margin-bottom:3px;font-family:'Rajdhani',sans-serif;letter-spacing:.4px}
+.login-sub{font-size:11px;color:var(--lo);margin-bottom:16px}
+.field-lbl{font-size:10px;color:var(--mid);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+.field-desc{font-size:9px;color:var(--lo);margin-bottom:5px;line-height:1.4}
+.field-wrap{position:relative;margin-bottom:14px}
+.field-wrap input,.field-wrap select{width:100%;background:var(--inp);border:1px solid var(--brd);border-radius:10px;padding:11px 12px 11px 38px;color:var(--hi);font-size:13px;outline:none;font-family:'Inter',sans-serif;transition:border-color .2s,box-shadow .2s}
+.field-wrap input:focus,.field-wrap select:focus{border-color:#00d4ff55;box-shadow:0 0 0 3px #00d4ff0a}
+.field-wrap input::placeholder{color:var(--lo)}
+.field-wrap .fi{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--lo);pointer-events:none}
+.field-wrap .eye-btn{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--lo);cursor:pointer;font-size:16px;padding:2px}
+.field-wrap.valid input{border-color:#00cc7744}
+.field-wrap.error input{border-color:#ff334444}
+.login-btn{width:100%;padding:12px;border-radius:11px;background:linear-gradient(135deg,#003344,#00d4ff18);border:1.5px solid #00d4ff55;color:var(--cyan);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;font-family:'Inter',sans-serif;letter-spacing:.3px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.login-btn:hover{background:linear-gradient(135deg,#004455,#00d4ff28);box-shadow:0 6px 20px #00d4ff22;transform:translateY(-1px)}
+.login-btn:active{transform:scale(.98)}
+.login-btn i{font-size:16px}
+.login-divider{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.login-divider span{height:1px;flex:1;background:var(--brd)}
+.login-divider p{font-size:10px;color:var(--lo);white-space:nowrap}
+.google-btn{width:100%;padding:11px;border-radius:11px;background:var(--inp);border:1px solid var(--brd);color:var(--mid);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;transition:all .2s;font-weight:500;margin-bottom:8px}
+.google-btn:hover{border-color:var(--cyan);color:var(--hi);transform:translateY(-1px)}
+.google-btn i{font-size:17px}
+.login-hint{text-align:center;font-size:10px;color:var(--lo);margin-top:10px}
+.login-hint a{color:var(--cyan);cursor:pointer;font-weight:500}
+.login-hint a:hover{text-decoration:underline}
+.forgot-link{text-align:right;margin-top:-10px;margin-bottom:12px}
+.forgot-link a{font-size:10px;color:var(--cyan);cursor:pointer}
+.check-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:14px}
+.check-row input[type="checkbox"]{width:16px;height:16px;margin-top:2px;accent-color:var(--cyan);cursor:pointer;flex-shrink:0}
+.check-row label{font-size:10px;color:var(--lo);line-height:1.5;cursor:pointer}
+.check-row label a{color:var(--cyan)}
+.strength-wrap{margin-top:4px;margin-bottom:10px}
+.strength-bar{height:3px;border-radius:2px;background:var(--brd);overflow:hidden;margin-bottom:3px}
+.strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s}
+.strength-txt{font-size:9px;color:var(--lo)}
+
+/* SETTINGS */
+.settings-wrap{flex:1;overflow-y:auto}
+.ss-head{font-size:9px;color:var(--lo);letter-spacing:.8px;text-transform:uppercase;padding:14px 16px 6px;font-weight:600}
+.ss-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--brd2);background:var(--bg2);transition:background .2s;cursor:pointer}
+.ss-row:hover{background:var(--bg3)}
+.ss-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ss-icon i{font-size:17px}
+.si-cy{background:linear-gradient(135deg,#001628,#002035)}.si-cy i{color:var(--cyan)}
+.si-gr{background:linear-gradient(135deg,#001610,#001e16)}.si-gr i{color:var(--green)}
+.si-or{background:linear-gradient(135deg,#160a00,#1e1000)}.si-or i{color:var(--orange)}
+.si-re{background:linear-gradient(135deg,#160508,#1e080e)}.si-re i{color:var(--red)}
+.si-pu{background:linear-gradient(135deg,#100016,#18001e)}.si-pu i{color:var(--purple)}
+[data-theme="light"] .si-cy{background:linear-gradient(135deg,#ddeeff,#cce8ff)}
+[data-theme="light"] .si-gr{background:linear-gradient(135deg,#ddfff0,#ccffe8)}
+[data-theme="light"] .si-or{background:linear-gradient(135deg,#fff0dd,#ffe4c8)}
+[data-theme="light"] .si-re{background:linear-gradient(135deg,#ffe0e8,#ffccd8)}
+[data-theme="light"] .si-pu{background:linear-gradient(135deg,#f0ddff,#e4ccff)}
+.ss-info{flex:1}
+.ss-name{font-size:12px;color:var(--hi);font-weight:500}
+.ss-val{font-size:10px;color:var(--lo);margin-top:1px}
+.ss-arr{color:var(--lo);font-size:17px}
+/* NO danger zone in settings anymore */
+.danger-zone{display:none!important}
+
+/* MISC */
+.voice-banner{background:linear-gradient(135deg,#001828,#00122080);border:1px solid #00d4ff33;border-radius:10px;padding:9px 14px;text-align:center;font-size:11px;font-weight:500;color:var(--cyan);margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.voice-banner:hover{background:linear-gradient(135deg,#002035,#001828);box-shadow:0 4px 16px #00d4ff18}
+[data-theme="light"] .voice-banner{background:linear-gradient(135deg,#e0f8ff,#d0f0ff);border-color:#00d4ff55}
+.section-lbl{font-size:9px;color:var(--lo);letter-spacing:.6px;text-transform:uppercase;margin-bottom:9px;font-weight:600;display:flex;align-items:center;gap:6px}
+.section-lbl::after{content:'';flex:1;height:1px;background:var(--brd2)}
+.add-btn{width:100%;margin-top:12px;padding:10px;border-radius:10px;border:1px dashed var(--brd);background:none;color:var(--cyan);font-size:11px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif;transition:all .2s}
+.add-btn:hover{border-color:var(--cyan);background:#00d4ff0a}
+
+/* MODALS */
+.modal-bg{position:absolute;inset:0;background:#00000099;z-index:80;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-bg.open{display:flex;animation:fadeIn .2s ease}
+.modal-box{background:var(--mod);border:1px solid #ff334466;border-radius:18px;padding:24px 20px;width:280px;text-align:center;box-shadow:0 20px 60px #00000088;animation:scaleIn .2s ease}
+.modal-ico i{font-size:36px;color:var(--red);filter:drop-shadow(0 0 8px #ff334455)}
+.modal-tit{font-size:15px;font-weight:700;color:var(--hi);margin:10px 0 5px;font-family:'Rajdhani',sans-serif;letter-spacing:.4px}
+.modal-desc{font-size:11px;color:var(--lo);margin-bottom:18px;line-height:1.6}
+.modal-btns{display:flex;gap:10px}
+.m-cancel{flex:1;padding:10px;border:1px solid var(--brd);border-radius:9px;background:none;color:var(--lo);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;transition:all .2s}
+.m-cancel:hover{border-color:var(--mid);color:var(--mid)}
+.m-confirm{flex:1;padding:10px;border:none;border-radius:9px;color:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+.mc-re{background:linear-gradient(135deg,#cc2233,#aa1122)}.mc-or{background:linear-gradient(135deg,#cc6600,#aa5500)}.mc-cy{background:linear-gradient(135deg,#006688,#00d4ff)}
+
+/* SECURE MODAL */
+.sec-step{display:none}.sec-step.active{display:block}
+.sec-type-confirm{width:100%;background:var(--inp);border:1px solid var(--brd);border-radius:9px;padding:10px 12px;color:var(--hi);font-size:13px;outline:none;font-family:'Rajdhani',sans-serif;letter-spacing:2px;text-align:center;margin-bottom:12px}
+.sec-method-btns{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.sec-method-btn{width:100%;padding:12px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;transition:all .2s}
+.smb-bio{background:linear-gradient(135deg,#003344,#00d4ff18);border:1.5px solid #00d4ff55;color:var(--cyan)}
+.smb-otp{background:linear-gradient(135deg,#1a0c20,#cc44ff18);border:1.5px solid #cc44ff55;color:var(--purple)}
+.fingerprint-anim{width:64px;height:64px;margin:10px auto;animation:fingerPulse 1.5s ease-in-out infinite;filter:drop-shadow(0 0 12px var(--cyan))}
+.otp-input{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
+.otp-box{width:36px;height:44px;background:var(--inp);border:1px solid var(--brd);border-radius:8px;text-align:center;font-size:18px;font-weight:700;color:var(--hi);outline:none;font-family:'Rajdhani',sans-serif;transition:border-color .2s}
+.otp-box:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #00d4ff22}
+
+/* LANG / THEME */
+.lang-dropdown-wrap{position:relative}
+.lang-dropdown{position:absolute;top:calc(100% + 6px);right:0;z-index:200;background:var(--sur);border:1px solid var(--brd);border-radius:12px;box-shadow:0 8px 32px #00000055;min-width:180px;max-height:260px;overflow-y:auto;animation:scaleIn .15s ease;transform-origin:top right}
+.lang-dropdown::-webkit-scrollbar{width:3px}
+.lang-dropdown::-webkit-scrollbar-thumb{background:#1a2d4a;border-radius:2px}
+.lang-option{padding:9px 14px;font-size:11px;color:var(--mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.lang-option:hover{background:var(--bg2);color:var(--cyan)}
+.lang-option.active{color:var(--cyan);background:var(--cyan-dim)}
+.lang-option .flag{font-size:14px}
+.lang-search{padding:8px 12px;border-bottom:1px solid var(--brd2);position:relative}
+.lang-search input{width:100%;background:var(--inp);border:1px solid var(--brd);border-radius:7px;padding:6px 10px 6px 28px;color:var(--hi);font-size:11px;outline:none;font-family:'Inter',sans-serif}
+.lang-search-ico{position:absolute;left:20px;top:15px;color:var(--lo);font-size:14px;pointer-events:none}
+.theme-toggle{background:none;border:1px solid var(--brd);border-radius:8px;padding:5px 8px;color:var(--mid);cursor:pointer;font-size:16px;display:flex;align-items:center;gap:5px;transition:all .2s;font-family:'Inter',sans-serif}
+.theme-toggle:hover{border-color:var(--cyan);color:var(--cyan);background:#00d4ff08}
+.spinner{width:16px;height:16px;border:2px solid #00d4ff33;border-top-color:var(--cyan);border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+.toast{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--sur);border:1px solid var(--brd);border-radius:10px;padding:10px 18px;font-size:11px;color:var(--hi);box-shadow:0 4px 20px #00000055;z-index:200;white-space:nowrap;display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.toast.success{border-color:#00cc7744}
+.toast.error{border-color:#ff334444}
+
+/* ADD ROUTINE */
+.ar-wrap{flex:1;overflow-y:auto;padding:14px 16px}
+.ar-card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:16px;margin-bottom:12px;position:relative}
+.ar-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff22,transparent)}
+.mode-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mode-opt{padding:10px 5px;border-radius:10px;border:1px solid var(--brd);background:none;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-size:9px;font-weight:600;color:var(--lo);font-family:'Inter',sans-serif;transition:all .2s}
+.mode-opt i{font-size:20px}
+.mode-opt.sel-w{border-color:#00d4ff55;color:var(--cyan);background:#00d4ff0a}
+.mode-opt.sel-f{border-color:#cc44ff55;color:var(--purple);background:#cc44ff0a}
+.mode-opt.sel-h{border-color:#00cc7755;color:var(--green);background:#00cc770a}
+.mode-opt.sel-c{border-color:#ff880055;color:var(--orange);background:#ff88000a}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px}
+.day-btn{padding:7px 0;border-radius:8px;border:1px solid var(--brd);background:none;color:var(--lo);font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;text-align:center}
+.day-btn.sel{border-color:var(--cyan);color:var(--cyan);background:#00d4ff12}
+
+/* ABOUT */
+.about-wrap{flex:1;overflow-y:auto;padding:14px 16px}
+.about-hero{background:linear-gradient(135deg,#001828,#001220);border:1px solid #00d4ff22;border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;top:-40px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,#00d4ff0a,transparent 70%)}
+.about-logo-wrap{display:flex;justify-content:center;margin-bottom:12px}
+.about-version-badge{display:inline-flex;align-items:center;gap:6px;background:#003344;border:1px solid #00d4ff33;border-radius:20px;padding:5px 14px;font-size:10px;color:var(--cyan);margin-bottom:8px}
+.about-title{font-size:20px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;letter-spacing:.8px;margin-bottom:4px}
+.about-sub{font-size:11px;color:var(--lo);line-height:1.6;margin-bottom:10px}
+.about-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.about-chip{padding:4px 10px;border-radius:20px;font-size:9px;font-weight:600;letter-spacing:.3px}
+.ac-cy{background:#00d4ff14;color:var(--cyan);border:1px solid #00d4ff33}
+.ac-gr{background:#00cc7714;color:var(--green);border:1px solid #00cc7733}
+.ac-or{background:#ff880014;color:var(--orange);border:1px solid #ff880033}
+.ac-re{background:#ff334414;color:var(--red);border:1px solid #ff334433}
+.ac-pu{background:#cc44ff14;color:var(--purple);border:1px solid #cc44ff33}
+.about-feature-card{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.about-feature-card::before{display:none}
+.af-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.af-icon i{font-size:20px}
+.af-title{font-size:12px;font-weight:600;color:var(--hi);margin-bottom:3px}
+.af-desc{font-size:10px;color:var(--lo);line-height:1.5}
+.about-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.about-stat{background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:12px;text-align:center}
+.about-stat-num{font-size:20px;font-weight:700;font-family:'Rajdhani',sans-serif;color:var(--cyan)}
+.about-stat-lbl{font-size:9px;color:var(--lo);margin-top:2px}
+.about-tech-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tech-tag{padding:5px 10px;background:var(--inp);border:1px solid var(--brd);border-radius:7px;font-size:10px;color:var(--mid)}
+
+/* EMERGENCY CONTACTS */
+.ec-wrap{flex:1;overflow-y:auto;padding:14px 16px}
+.ec-contact{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.ec-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;font-weight:700;font-family:'Rajdhani',sans-serif}
+.eca-primary{background:linear-gradient(135deg,#003344,#00d4ff18);border:2px solid var(--cyan);color:var(--cyan)}
+.eca-verified{background:linear-gradient(135deg,#001610,#00cc7718);border:2px solid var(--green);color:var(--green)}
+.eca-pending{background:linear-gradient(135deg,#160a00,#ff880018);border:2px solid var(--orange);color:var(--orange)}
+.ec-info{flex:1}
+.ec-email{font-size:12px;font-weight:600;color:var(--hi)}
+.ec-role{font-size:10px;color:var(--lo);margin-top:2px}
+.ec-badge{font-size:9px;padding:3px 8px;border-radius:10px;font-weight:600;letter-spacing:.3px}
+.ecb-primary{background:#00d4ff14;color:var(--cyan);border:1px solid #00d4ff33}
+.ecb-verified{background:#00cc7714;color:var(--green);border:1px solid #00cc7733}
+.ecb-pending{background:#ff880014;color:var(--orange);border:1px solid #ff880033;animation:blink 2s infinite}
+.ec-del{background:none;border:none;color:var(--lo);cursor:pointer;padding:4px;border-radius:6px;transition:color .2s}
+.ec-del:hover{color:var(--red)}
+.ec-add-form{background:var(--card);border:1px solid #00d4ff33;border-radius:12px;padding:14px;margin-bottom:12px}
+.otp-sent-info{background:linear-gradient(135deg,#001628,#001a22);border:1px solid #00d4ff22;border-radius:8px;padding:8px 12px;font-size:10px;color:var(--mid);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ec-note{background:linear-gradient(135deg,#0a1e10,#001810);border:1px solid #00cc7722;border-radius:10px;padding:10px 14px;font-size:10px;color:#5aaa88;line-height:1.6;margin-bottom:12px}
+[data-theme="light"] .ec-note{background:linear-gradient(135deg,#e8fff2,#d8f5e8);color:#147a44}
+
+/* NEW REG */
+.nr-field-group{background:linear-gradient(135deg,#040d18,#060f1a);border:1px solid var(--brd2);border-radius:12px;padding:14px;margin-bottom:12px}
+[data-theme="light"] .nr-field-group{background:linear-gradient(135deg,#f0f6ff,#e8f2fc)}
+.nr-group-title{font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.nr-group-title i{font-size:14px}
+
+/* LOGIN PAGE (Settings sub-page) */
+.login-page-wrap{flex:1;overflow-y:auto;padding:14px 16px}
+.lp-card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:16px;margin-bottom:12px;position:relative}
+.lp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff22,transparent)}
+.lp-field-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--brd2)}
+.lp-field-row:last-child{border-bottom:none}
+.lp-label{font-size:11px;color:var(--lo);width:90px;flex-shrink:0}
+.lp-value{flex:1;font-size:12px;font-weight:500;color:var(--hi);font-family:'Rajdhani',sans-serif}
+.lp-edit{font-size:10px;color:var(--cyan);cursor:pointer}
+
+/* ACTIVE DEVICE LIST */
+.adl-wrap{flex:1;overflow-y:auto;padding:14px 16px}
+.adl-card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:12px;position:relative}
+.adl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00d4ff22,transparent)}
+.adl-device{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--brd2)}
+.adl-device:last-child{border-bottom:none}
+.adl-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.adl-icon i{font-size:18px}
+.adl-info{flex:1}
+.adl-name{font-size:12px;font-weight:600;color:var(--hi)}
+.adl-detail{font-size:9px;color:var(--lo);margin-top:2px}
+.adl-status{font-size:9px;padding:3px 8px;border-radius:10px;font-weight:600}
+.adl-remove{background:none;border:none;color:var(--lo);cursor:pointer;padding:4px;border-radius:6px;transition:color .2s}
+.adl-remove:hover{color:var(--red)}
+
+/* FORGOT */
+.fp-step{display:none}.fp-step.active{display:block}
+</style>
+</head>
+<body>
+
+<!-- SVG Logo -->
+<svg style="display:none">
+  <defs>
+    <symbol id="ecotrack-logo" viewBox="0 0 100 100">
+      <polygon points="50,4 90,26 90,74 50,96 10,74 10,26" fill="#0a1e33" stroke="url(#hex-g)" stroke-width="2.5"/>
+      <defs>
+        <linearGradient id="hex-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#0088aa"/></linearGradient>
+        <linearGradient id="sh-g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a4060"/><stop offset="100%" stop-color="#0a2040"/></linearGradient>
+        <linearGradient id="st-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c0d8f0"/><stop offset="100%" stop-color="#8aaccc"/></linearGradient>
+      </defs>
+      <polygon points="50,10 84,29 84,71 50,90 16,71 16,29" fill="none" stroke="#00d4ff22" stroke-width="1"/>
+      <path d="M28,38 Q20,50 28,62" stroke="#00d4ff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
+      <path d="M22,33 Q10,50 22,67" stroke="#00d4ff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".4"/>
+      <path d="M72,38 Q80,50 72,62" stroke="#00d4ff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
+      <path d="M78,33 Q90,50 78,67" stroke="#00d4ff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".4"/>
+      <path d="M50,22 C38,22 30,31 30,42 C30,56 50,76 50,76 C50,76 70,56 70,42 C70,31 62,22 50,22Z" fill="url(#sh-g)" stroke="#00d4ff44" stroke-width="1"/>
+      <path d="M50,28 L52.5,39 L50,34 L47.5,39 Z" fill="url(#st-g)"/>
+      <path d="M50,56 L52.5,45 L50,50 L47.5,45 Z" fill="url(#st-g)"/>
+      <path d="M44,42 L55,44.5 L50,42 L55,39.5 Z" fill="url(#st-g)"/>
+      <path d="M56,42 L45,44.5 L50,42 L45,39.5 Z" fill="url(#st-g)"/>
+      <circle cx="50" cy="42" r="3" fill="#00d4ff" opacity=".9"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- DESKTOP FOOTER -->
+<div class="desktop-footer">Created by <span>EcoTrack AI</span> · Sentinel-Logic Agentic Systems · <span>2026</span> · All rights reserved</div>
+
+<div class="phone-frame">
+
+<!-- DESKTOP NAV -->
+<nav class="desktop-nav" id="desktop-nav">
+  <div class="dn-logo">
+    <svg width="32" height="32" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg>
+    <div><div class="dn-brand">EcoTrack AI</div><div class="dn-sub">Sentinel-Logic v2.2.0</div></div>
+  </div>
+  <div style="padding:10px 0">
+    <div class="dn-section">Navigation</div>
+    <div class="dn-item active" id="dn-home" onclick="navTo('home')"><i class="ti ti-home"></i> Home</div>
+    <div class="dn-item" id="dn-device" onclick="navTo('device')"><i class="ti ti-devices"></i> Device</div>
+    <div class="dn-section">Features</div>
+    <div class="dn-item" id="dn-routine" onclick="navTo('routine')"><i class="ti ti-calendar"></i> Routine</div>
+    <div class="dn-item" onclick="navTo('routine')"><i class="ti ti-list"></i> Activity Logs <span class="sb-badge">17</span></div>
+    <div class="dn-item" onclick="navTo('device')"><i class="ti ti-gauge"></i> Optimizer</div>
+    <div class="dn-section">Security</div>
+    <div class="dn-item" onclick="navTo('emergency')"><i class="ti ti-mail-forward" style="color:var(--red)"></i> Emergency Contacts</div>
+    <div class="dn-item" id="dn-settings" onclick="navTo('settings')"><i class="ti ti-settings"></i> Settings</div>
+    <div class="dn-item" onclick="navTo('userManual')"><i class="ti ti-book"></i> User Manual</div>
+    <div class="dn-section">System</div>
+    <div class="dn-item" onclick="toggleTheme()"><i class="ti ti-moon" id="dn-theme-icon"></i> Toggle Theme</div>
+    <div class="dn-item" onclick="toggleLangMenu('desktop')">
+      <i class="ti ti-world"></i> Language
+      <div class="lang-dropdown-wrap" style="margin-left:auto;position:relative">
+        <div class="lang-dropdown" id="lang-menu-desktop" style="display:none;right:auto;left:0">
+          <div class="lang-search"><i class="ti ti-search lang-search-ico"></i><input type="text" placeholder="Search…" oninput="filterLangs(this.value,'desktop')"/></div>
+          <div id="lang-list-desktop"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dn-health">
+    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--lo)">System Health</span><span style="font-size:12px;font-weight:600;color:var(--green)">85%</span></div>
+    <div style="height:3px;background:var(--brd);border-radius:2px;margin-top:6px"><div style="width:85%;height:100%;background:linear-gradient(90deg,#008844,#00cc77);border-radius:2px"></div></div>
+  </div>
+  <button class="dn-logout" onclick="openSecureModal('logout')"><i class="ti ti-logout"></i> Logout Device</button>
+  <div class="dn-footer">Created by EcoTrack AI · 2026</div>
+</nav>
+
+<div class="app" id="app">
+<div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg"></span></div>
+
+<!-- ══════ LOGIN ══════ -->
+<div class="screen active" id="sc-login">
+  <div class="login-wrap">
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px">
+      <button class="theme-toggle" onclick="toggleTheme()"><i class="ti ti-moon" id="theme-icon-login"></i></button>
+      <div class="lang-dropdown-wrap">
+        <button class="theme-toggle" onclick="toggleLangMenu('login')"><i class="ti ti-world"></i><span id="lang-label-login" style="font-size:10px">EN</span></button>
+        <div class="lang-dropdown" id="lang-menu-login" style="display:none">
+          <div class="lang-search"><i class="ti ti-search lang-search-ico"></i><input type="text" placeholder="Search language…" oninput="filterLangs(this.value,'login')"/></div>
+          <div id="lang-list-login"></div>
+        </div>
+      </div>
+    </div>
+    <div class="login-logo">
+      <svg class="login-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg>
+      <div class="login-brand">EcoTrack AI</div>
+      <div class="login-tagline" data-i18n="tagline">Sentinel-Logic · Autonomous Device Guardian</div>
+    </div>
+    <div class="login-card">
+      <div class="login-title" data-i18n="signin_title">Sign in to Sentinel</div>
+      <div class="login-sub" data-i18n="signin_sub">Verified device access required</div>
+      <div class="field-lbl" data-i18n="email_label">Email Address</div>
+      <div class="field-wrap" id="login-email-wrap"><i class="ti ti-mail fi"></i><input type="email" id="login-email" placeholder="user@email.com" autocomplete="email" oninput="validateEmail('login')"/></div>
+      <div class="field-lbl" data-i18n="pass_label">Password</div>
+      <div class="field-wrap" id="login-pass-wrap"><i class="ti ti-lock fi"></i><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/><button class="eye-btn" onclick="toggleEye('login-pass','eye-login')" tabindex="-1"><i class="ti ti-eye" id="eye-login"></i></button></div>
+      <div class="forgot-link"><a onclick="goTo('sc-forgot')" data-i18n="forgot_pass">Forgot password?</a></div>
+      <button class="login-btn" onclick="doLogin()" id="login-submit-btn"><span id="login-btn-inner"><i class="ti ti-login"></i> <span data-i18n="signin_btn">Sign In to Sentinel</span></span></button>
+      <div class="login-divider"><span></span><p data-i18n="or_continue">or continue with</p><span></span></div>
+      <button class="google-btn" onclick="doLogin()"><i class="ti ti-brand-google"></i> <span data-i18n="google_btn">Sign in with Google</span></button>
+    </div>
+
+    <div class="login-hint"><span data-i18n="new_user">New device?</span> <a onclick="goTo('sc-register')" data-i18n="register_link">Register</a> · <a onclick="goTo('sc-newreg')" data-i18n="new_reg_link">New Registration</a></div>
+  </div>
+</div>
+
+<!-- ══════ FORGOT PASSWORD ══════ -->
+<div class="screen" id="sc-forgot">
+  <div class="login-wrap" style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <button class="icon-btn" onclick="goTo('sc-login')"><i class="ti ti-arrow-left"></i></button>
+      <button class="theme-toggle" onclick="toggleTheme()"><i class="ti ti-moon" id="theme-icon-forgot"></i></button>
+    </div>
+    <div class="login-logo" style="margin-bottom:18px">
+      <svg class="login-logo-svg" style="width:64px;height:64px" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg>
+      <div class="login-brand" style="font-size:18px">Reset Password</div>
+      <div class="login-tagline">We'll send a recovery link to your email</div>
+    </div>
+    <div class="fp-step active" id="fp-step1">
+      <div class="login-card">
+        <div class="login-title">Forgot Password?</div>
+        <div class="login-sub">Enter your registered email address</div>
+        <div class="field-lbl">Registered Email</div>
+        <div class="field-wrap" id="fp-email-wrap"><i class="ti ti-mail fi"></i><input type="email" id="fp-email" placeholder="user@email.com" oninput="validateEmail('fp')"/></div>
+        <div style="background:linear-gradient(135deg,#001628,#001a22);border:1px solid #00d4ff22;border-radius:10px;padding:10px 12px;font-size:10px;color:var(--lo);margin-bottom:14px;display:flex;align-items:flex-start;gap:8px"><i class="ti ti-info-circle" style="color:var(--cyan);font-size:16px;flex-shrink:0;margin-top:1px"></i><span>A secure reset link will be sent. Expires in 30 minutes.</span></div>
+        <button class="login-btn" onclick="sendForgotOTP()"><i class="ti ti-send"></i> Send Reset Link</button>
+      </div>
+    </div>
+    <div class="fp-step" id="fp-step2">
+      <div class="login-card">
+        <div class="login-title">Enter OTP</div>
+        <div class="login-sub" id="fp-otp-sub">OTP sent to your email</div>
+        <div class="field-lbl">Enter 6-digit OTP</div>
+        <div class="otp-input" id="fp-otp-inputs">
+          <input class="otp-box" maxlength="1" oninput="otpNext(this,'fp')"/>
+          <input class="otp-box" maxlength="1" oninput="otpNext(this,'fp')"/>
+          <input class="otp-box" maxlength="1" oninput="otpNext(this,'fp')"/>
+          <input class="otp-box" maxlength="1" oninput="otpNext(this,'fp')"/>
+          <input class="otp-box" maxlength="1" oninput="otpNext(this,'fp')"/>
+          <input class="otp-box" maxlength="1" oninput="otpNext(this,'fp')"/>
+        </div>
+        <div style="font-size:10px;color:var(--lo);text-align:center;margin-bottom:12px">Demo: any 6 digits · <a style="color:var(--cyan);cursor:pointer" onclick="resendOTP('fp')">Resend OTP</a></div>
+        <button class="login-btn" onclick="verifyForgotOTP()"><i class="ti ti-check"></i> Verify & Reset</button>
+      </div>
+    </div>
+    <div class="fp-step" id="fp-step3">
+      <div class="login-card">
+        <div class="login-title">Set New Password</div>
+        <div class="login-sub">Create a strong new password</div>
+        <div class="field-lbl">New Password</div>
+        <div class="field-wrap"><i class="ti ti-lock fi"></i><input type="password" id="fp-newpass" placeholder="Min 8 characters" oninput="validatePassStrength2()"/><button class="eye-btn" onclick="toggleEye('fp-newpass','eye-fp')" tabindex="-1"><i class="ti ti-eye" id="eye-fp"></i></button></div>
+        <div class="strength-wrap" id="strength-wrap2" style="display:none"><div class="strength-bar"><div class="strength-fill" id="strength-fill2" style="width:0%"></div></div><div class="strength-txt" id="strength-txt2"></div></div>
+        <div class="field-lbl">Confirm Password</div>
+        <div class="field-wrap"><i class="ti ti-lock-check fi"></i><input type="password" id="fp-confirmpass" placeholder="Repeat password"/><button class="eye-btn" onclick="toggleEye('fp-confirmpass','eye-fpc')" tabindex="-1"><i class="ti ti-eye" id="eye-fpc"></i></button></div>
+        <button class="login-btn" onclick="resetPassword()"><i class="ti ti-lock-check"></i> Reset Password</button>
+      </div>
+    </div>
+    <div class="login-hint"><a onclick="goTo('sc-login')">← Back to Sign In</a></div>
+  </div>
+</div>
+
+<!-- ══════ REGISTER ══════ -->
+<div class="screen" id="sc-register">
+  <div class="login-wrap" style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <button class="icon-btn" onclick="goTo('sc-login')"><i class="ti ti-arrow-left"></i></button>
+      <div style="display:flex;gap:8px">
+        <button class="theme-toggle" onclick="toggleTheme()"><i class="ti ti-moon" id="theme-icon-reg"></i></button>
+        <div class="lang-dropdown-wrap"><button class="theme-toggle" onclick="toggleLangMenu('reg')"><i class="ti ti-world"></i><span id="lang-label-reg" style="font-size:10px">EN</span></button><div class="lang-dropdown" id="lang-menu-reg" style="display:none"><div class="lang-search"><i class="ti ti-search lang-search-ico"></i><input type="text" placeholder="Search…" oninput="filterLangs(this.value,'reg')"/></div><div id="lang-list-reg"></div></div></div>
+      </div>
+    </div>
+    <div class="login-logo" style="margin-bottom:14px"><svg class="login-logo-svg" style="width:56px;height:56px" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div class="login-brand" style="font-size:18px">EcoTrack AI</div></div>
+    <div class="login-card">
+      <div class="login-title" data-i18n="reg_title">Create Account</div>
+      <div class="login-sub" data-i18n="reg_sub">Join the Sentinel network</div>
+      <div class="field-lbl" data-i18n="fullname_label">Full Name</div>
+      <div class="field-wrap" id="reg-name-wrap"><i class="ti ti-user fi"></i><input type="text" id="reg-name" placeholder="John Doe" oninput="validateName()"/></div>
+      <div class="field-lbl" data-i18n="email_label">Email Address</div>
+      <div class="field-wrap" id="reg-email-wrap"><i class="ti ti-mail fi"></i><input type="email" id="reg-email" placeholder="user@email.com" oninput="validateEmail('reg')"/></div>
+      <div class="field-lbl" data-i18n="phone_label">Phone Number</div>
+      <div class="field-wrap"><i class="ti ti-phone fi"></i><input type="tel" placeholder="+91 98765 43210"/></div>
+      <div class="field-lbl" data-i18n="pass_label">Password</div>
+      <div class="field-wrap" id="reg-pass-wrap"><i class="ti ti-lock fi"></i><input type="password" id="reg-pass" placeholder="Min 8 characters" oninput="validatePassStrength()"/><button class="eye-btn" onclick="toggleEye('reg-pass','eye-reg')" tabindex="-1"><i class="ti ti-eye" id="eye-reg"></i></button></div>
+      <div class="strength-wrap" id="strength-wrap" style="display:none"><div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0%"></div></div><div class="strength-txt" id="strength-txt"></div></div>
+      <div class="field-lbl" data-i18n="confirm_pass">Confirm Password</div>
+      <div class="field-wrap" id="reg-cpass-wrap"><i class="ti ti-lock-check fi"></i><input type="password" id="reg-cpass" placeholder="Repeat password" oninput="validateConfirmPass()"/><button class="eye-btn" onclick="toggleEye('reg-cpass','eye-cpass')" tabindex="-1"><i class="ti ti-eye" id="eye-cpass"></i></button></div>
+      <div class="check-row"><input type="checkbox" id="terms-check"/><label for="terms-check" data-i18n="terms_agree">I agree to the <a>Terms & Conditions</a> and <a>Privacy Policy</a></label></div>
+      <button class="login-btn" onclick="doRegister()"><i class="ti ti-user-plus"></i> <span data-i18n="create_account">Create Account</span></button>
+    </div>
+    <div class="login-hint"><span data-i18n="have_account">Already have an account?</span> <a onclick="goTo('sc-login')" data-i18n="signin_link">Sign In</a></div>
+  </div>
+</div>
+
+<!-- ══════ NEW REGISTRATION ══════ -->
+<div class="screen" id="sc-newreg">
+  <div class="login-wrap" style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <button class="icon-btn" onclick="goTo('sc-login')"><i class="ti ti-arrow-left"></i></button>
+      <div style="display:flex;gap:8px"><button class="theme-toggle" onclick="toggleTheme()"><i class="ti ti-moon" id="theme-icon-newreg"></i></button></div>
+    </div>
+    <div class="login-logo" style="margin-bottom:10px"><svg class="login-logo-svg" style="width:52px;height:52px" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div class="login-brand" style="font-size:17px">New Agent Registration</div><div class="login-tagline" style="color:var(--cyan);font-size:9px">Register your organization's Sentinel device</div></div>
+    <div class="nr-field-group"><div class="nr-group-title"><i class="ti ti-building"></i> 1 — Organization</div><div class="field-desc">Organization or team name (e.g. DRDO, Home)</div><div class="field-wrap" style="margin-bottom:8px"><i class="ti ti-building fi"></i><input type="text" placeholder="e.g. DRDO Unit 4, My Home"/></div><div class="field-wrap" style="margin-bottom:0"><i class="ti ti-shield fi"></i><select style="padding-left:38px;appearance:none;background:var(--inp)"><option value="">Select role…</option><option>Admin — Full control</option><option>Operator — Send commands, view data</option><option>Viewer — Read-only</option><option>Guardian — Emergency alerts only</option></select></div></div>
+    <div class="nr-field-group"><div class="nr-group-title"><i class="ti ti-device-mobile"></i> 2 — Device Identity</div><div class="field-desc">Unique device name (e.g. SENTINEL-15, Dad-Phone)</div><div class="field-wrap" style="margin-bottom:0"><i class="ti ti-device-mobile fi"></i><input type="text" placeholder="e.g. SENTINEL-15, Dad-Phone"/></div></div>
+    <div class="nr-field-group"><div class="nr-group-title"><i class="ti ti-user"></i> 3 — Account</div><div class="field-wrap" style="margin-bottom:8px"><i class="ti ti-key fi"></i><input type="text" placeholder="Referral code (optional)"/></div><div class="field-wrap" style="margin-bottom:8px"><i class="ti ti-mail fi"></i><input type="email" placeholder="Email address"/></div><div class="field-wrap" style="margin-bottom:0"><i class="ti ti-lock fi"></i><input type="password" id="newreg-pass" placeholder="Create a strong password"/><button class="eye-btn" onclick="toggleEye('newreg-pass','eye-newreg')" tabindex="-1"><i class="ti ti-eye" id="eye-newreg"></i></button></div></div>
+    <div class="check-row"><input type="checkbox" id="newreg-terms"/><label for="newreg-terms">I agree to the <a style="color:var(--cyan)">Terms & Conditions</a> and <a style="color:var(--cyan)">Privacy Policy</a></label></div>
+    <button class="login-btn" onclick="doNewRegister()"><i class="ti ti-robot"></i> Register Sentinel Agent</button>
+    <div class="login-hint">Already registered? <a onclick="goTo('sc-login')">Sign In</a></div>
+  </div>
+</div>
+
+<!-- ══════ HOME ══════ -->
+<div class="screen" id="sc-home">
+  <!-- 1. SENTINEL STATUS TOP -->
+  <div class="sentinel-top-bar">
+    <div class="stb-item"><div class="stb-dot online" id="stb-dot"></div> <span id="stb-status-txt">Sentinel Online</span></div>
+    <div class="stb-item"><i class="ti ti-wifi"></i> <span id="stb-network">5G Active</span></div>
+    <div class="stb-item"><i class="ti ti-clock"></i> <span id="live-clock">--:--</span></div>
+  </div>
+  <div class="topbar">
+    <div class="logo-row"><button class="icon-btn" onclick="openSidebar()"><i class="ti ti-menu-2"></i></button><svg class="eco-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div><div class="logo-name">EcoTrack AI</div><div class="logo-sub" id="home-user-label">User126@email.com</div></div></div>
+    <div class="topbar-r">
+      <div class="health-pill"><i class="ti ti-activity" style="font-size:12px"></i> 85%</div>
+      <button class="theme-toggle" onclick="toggleTheme()" style="border:none;background:none;padding:4px"><i class="ti ti-sun" id="theme-icon-home" style="font-size:20px;color:var(--lo)"></i></button>
+      <div class="lang-dropdown-wrap"><button class="icon-btn" onclick="toggleLangMenu('home')"><i class="ti ti-world"></i></button><div class="lang-dropdown" id="lang-menu-home" style="display:none"><div class="lang-search"><i class="ti ti-search lang-search-ico"></i><input type="text" placeholder="Search…" oninput="filterLangs(this.value,'home')"/></div><div id="lang-list-home"></div></div></div>
+      <button class="icon-btn"><i class="ti ti-bell"></i></button>
+    </div>
+  </div>
+  <div class="scroll"><div class="pad">
+
+    <!-- 5. MAP WITH ONLINE/OFFLINE TABS -->
+    <div class="map-mode-tabs">
+      <button class="mmt-btn active online" id="mmt-online" onclick="switchMapMode('online')"><i class="ti ti-wifi"></i> Online · Find My Device</button>
+      <button class="mmt-btn offline" id="mmt-offline" onclick="switchMapMode('offline')"><i class="ti ti-wifi-off"></i> Offline · BLE Track</button>
+    </div>
+
+    <div class="map-box">
+      <div class="map-grid"></div>
+      <div class="map-scanline"></div>
+      <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 360 190">
+        <path d="M0 95 Q75 82 135 78 Q205 70 275 94 Q308 105 360 100" stroke="#1a3a6a" stroke-width="8" fill="none"/>
+        <path d="M0 130 Q95 124 185 120 Q258 117 360 132" stroke="#1a3a6a" stroke-width="5" fill="none"/>
+        <path d="M115 0 Q122 58 128 95 Q134 135 130 190" stroke="#1a3a6a" stroke-width="5" fill="none"/>
+        <path d="M228 0 Q232 48 236 104 Q238 146 234 190" stroke="#1a3a6a" stroke-width="4" fill="none"/>
+        <path d="M128 78 Q168 88 236 104" stroke="#00d4ff" stroke-width="2" fill="none" stroke-dasharray="5 4" opacity=".8"/>
+        <circle r="3" fill="#00d4ff" opacity=".9"><animateMotion dur="4s" repeatCount="indefinite" path="M128 78 Q168 88 236 104"/></circle>
+      </svg>
+      <div class="map-label" id="map-label-main"><i class="ti ti-map-pin" style="font-size:12px"></i> Agentic Workflow Trace</div>
+      <div class="map-sos"><i class="ti ti-alert-triangle" style="font-size:10px"></i> SOS TRIGGERED</div>
+      <div class="map-pin" style="top:26px;right:54px"><i class="ti ti-map-pin" style="color:#ff3344;font-size:24px;filter:drop-shadow(0 0 6px #ff334488)"></i></div>
+      <div class="map-pin" style="top:74px;left:70px"><i class="ti ti-map-pin" style="color:#ffcc00;font-size:20px;filter:drop-shadow(0 0 5px #ffcc0077)"></i></div>
+      <div class="map-pin" style="bottom:36px;left:114px"><i class="ti ti-map-pin" style="color:#00d4ff;font-size:18px;filter:drop-shadow(0 0 5px #00d4ff77)"></i></div>
+      <div class="zoom-col"><div class="zoom-b">+</div><div class="zoom-b">−</div></div>
+      <div class="map-mic" onclick="openMapOverlay('online')"><i class="ti ti-microphone"></i></div>
+
+      <!-- ONLINE OVERLAY -->
+      <div class="map-overlay" id="map-overlay-online">
+        <button class="mo-close" onclick="closeMapOverlay()"><i class="ti ti-x"></i></button>
+        <div class="find-device-wrap">
+          <div style="font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">🌐 Online · Find My Device</div>
+          <div class="radar-wrap">
+            <div class="radar-ring"></div>
+            <div class="radar-ring"></div>
+            <div class="radar-ring"></div>
+            <div class="radar-center"><i class="ti ti-map-pin"></i></div>
+          </div>
+          <div class="find-status" id="find-status">Acquiring GPS signal…</div>
+          <div class="find-coords" id="find-coords">Lat: +28.6139° · Lon: +77.2090°</div>
+          <div class="find-btn" onclick="triggerFindDevice()"><i class="ti ti-radar"></i> Start Live Track</div>
+          <div style="font-size:9px;color:var(--lo);text-align:center;margin-top:4px;line-height:1.4">Uses Google Find My Device API<br>Real-time GPS + cell tower triangulation</div>
+        </div>
+      </div>
+
+      <!-- OFFLINE OVERLAY -->
+      <div class="map-overlay" id="map-overlay-offline">
+        <button class="mo-close" onclick="closeMapOverlay()"><i class="ti ti-x"></i></button>
+        <div class="offline-wrap">
+          <div style="font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px">📡 Offline · BLE Proximity</div>
+          <div class="ble-ring-wrap">
+            <div class="ble-ring"></div>
+            <div class="ble-ring"></div>
+            <div class="ble-center"><i class="ti ti-bluetooth"></i></div>
+          </div>
+          <div class="ble-hot-cold" id="ble-signal" style="color:var(--orange)">● WARM — Getting closer</div>
+          <div class="ble-dist" id="ble-dist">BLE RSSI: -67 dBm · ~4.2m away</div>
+          <div class="offline-note">
+            ⚡ Works WITHOUT internet. Uses Bluetooth Low Energy (BLE) RSSI hot/cold radar. Voice wake also active — no network needed.
+          </div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <div style="flex:1;background:#001628;border:1px solid #00d4ff22;border-radius:7px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--lo)">Last GPS</div><div style="font-size:10px;color:var(--cyan);font-weight:600">+28.61°</div></div>
+            <div style="flex:1;background:#001628;border:1px solid #00d4ff22;border-radius:7px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--lo)">BLE Range</div><div style="font-size:10px;color:var(--orange);font-weight:600">~4m</div></div>
+            <div style="flex:1;background:#001628;border:1px solid #00cc7722;border-radius:7px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--lo)">Wake Word</div><div style="font-size:10px;color:var(--green);font-weight:600">ACTIVE</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="voice-banner" onclick="openMapOverlay(curMapMode)"><i class="ti ti-waveform"></i> <span id="voice-banner-txt">Voice Command · Live GPS Map</span></div>
+
+    <div class="alert-grid">
+      <div class="alert-c r"><div class="atitle r">LAST-BREATH SOS</div><div style="display:flex;align-items:center;gap:6px"><i class="ti ti-battery-1" style="font-size:20px;color:#ff3344;filter:drop-shadow(0 0 4px #ff334488)"></i><span class="abig r">1%</span></div><div class="astatus r">GPS LOCKED</div><div class="asub">Last known: 10:45 PM</div></div>
+      <div class="alert-c y"><div class="atitle y">SIM REMOVAL ALERT</div><div style="display:flex;align-items:center;gap:6px"><i class="ti ti-sim-card" style="font-size:20px;color:#ffcc00;filter:drop-shadow(0 0 4px #ffcc0077)"></i><span class="astatus y">Red Alert</span></div><div style="font-size:10px;color:#ffcc00;font-weight:600;margin-top:2px">SMS SENT</div><div class="asub">STM: 10:45 PM</div></div>
+    </div>
+    <div class="section-lbl" data-i18n="adv_vitals">Advanced Sentinel Vitals</div>
+    <div class="act-grid">
+      <button class="act-btn cy" onclick="showToast('Ring command sent!','success')"><i class="ti ti-phone-call"></i> <span data-i18n="ring">RING</span></button>
+      <button class="act-btn gr" onclick="showToast('Closed-loop activated','success')"><i class="ti ti-refresh"></i> <span data-i18n="closed_loop">CLOSED-LOOP</span></button>
+      <button class="act-btn or" onclick="openSecureModal('lock')"><i class="ti ti-lock"></i> <span data-i18n="lock_device">LOCK DEVICE</span></button>
+      <button class="act-btn re" onclick="openSecureModal('erase')"><i class="ti ti-trash"></i> <span data-i18n="erase_data">ERASE DATA</span></button>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-chart-bar"></i> <span data-i18n="sys_vitals">System Vitals</span></div>
+      <div class="gauge-row">
+        <div class="gauge-c"><div class="gauge-label">Performance</div><div class="gauge-num">85%</div><div class="gauge-bar"><div class="gauge-fill gf-cy" style="width:85%"></div></div><div class="gauge-sub">System Health: Excellent</div></div>
+        <div class="gauge-c"><div class="gauge-label">Cache Gain</div><div class="gauge-num">1.2GB</div><div class="gauge-bar"><div class="gauge-fill gf-gr" style="width:72%"></div></div><div class="gauge-sub">14 apps sleeping</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-c"><div class="stat-lbl"><i class="ti ti-shield"></i> Privacy</div><div class="stat-val sv-cy">17 Alerts</div></div>
+        <div class="stat-c"><div class="stat-lbl"><i class="ti ti-calendar"></i> Routine</div><div class="stat-val sv-gr">FOCUS</div></div>
+        <div class="stat-c"><div class="stat-lbl"><i class="ti ti-activity"></i> Activity</div><div class="stat-val sv-wh">Good</div></div>
+        <div class="stat-c"><div class="stat-lbl"><i class="ti ti-cpu"></i> CPU</div><div class="stat-val sv-or">9870</div></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="bottom-tab-bar">
+    <button class="tab-btn active" id="tab-home" onclick="switchTab('home',this)"><i class="ti ti-home"></i> <span data-i18n="home">Home</span></button>
+    <button class="tab-btn" id="tab-device" onclick="switchTab('device',this)"><i class="ti ti-devices"></i> <span data-i18n="device">Device</span></button>
+    <button class="tab-btn" id="tab-routine" onclick="switchTab('routine',this)"><i class="ti ti-calendar"></i> <span data-i18n="routine">Routine</span></button>
+  </div>
+</div>
+
+<!-- ══════ DEVICE ══════ -->
+<div class="screen" id="sc-device">
+  <div class="sentinel-top-bar"><div class="stb-item"><div class="stb-dot online"></div> Sentinel Online</div><div class="stb-item"><i class="ti ti-clock"></i> <span class="live-clock-d">--:--</span></div></div>
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="openSidebar()"><i class="ti ti-menu-2"></i></button><svg class="eco-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div><div class="logo-name">Sentinel Devices</div><div class="logo-sub">Command Center</div></div></div><div class="topbar-r"><button class="icon-btn"><i class="ti ti-bell"></i></button></div></div>
+  <div class="scroll"><div class="pad">
+    <div class="dev-card" style="border-color:#cc223344;box-shadow:0 0 20px #cc223310">
+      <div class="dev-top"><div><div class="dev-name">SENTINEL-13</div><div class="dev-id">ID: Use0284 · Real-time GPS Active</div></div><div class="status-pill sp-al">ALERT</div></div>
+      <div class="tele-row"><div class="tele-c"><div class="tele-lbl">Battery</div><div class="tele-val sv-re">1%</div></div><div class="tele-c"><div class="tele-lbl">GSM</div><div class="tele-val sv-re">Lost</div></div><div class="tele-c"><div class="tele-lbl">GPS</div><div class="tele-val sv-or">Locked</div></div></div>
+      <div class="card" style="margin:0 0 10px;padding:10px">
+        <div class="card-title" style="margin-bottom:8px"><i class="ti ti-gauge"></i> Performance</div>
+        <div class="gauge-row" style="gap:8px"><div class="gauge-c" style="padding:10px"><div class="gauge-label">Optimizer</div><div class="gauge-num" style="color:var(--orange)">45%</div><div class="gauge-bar"><div class="gauge-fill gf-or" style="width:45%"></div></div><div class="gauge-sub">Needs attention</div></div><div class="gauge-c" style="padding:10px"><div class="gauge-label">Vitals</div><div class="gauge-num" style="color:var(--green)">85%</div><div class="gauge-bar"><div class="gauge-fill gf-gr" style="width:85%"></div></div><div class="gauge-sub">Optimized</div></div></div>
+        <div class="stat-row" style="gap:8px;margin:8px 0 0"><div class="stat-c"><div class="stat-lbl"><i class="ti ti-database"></i> Cache</div><div class="stat-val sv-cy">9670</div></div><div class="stat-c"><div class="stat-lbl"><i class="ti ti-cpu"></i> Loaded</div><div class="stat-val sv-or">500</div></div></div>
+      </div>
+      <div class="dev-map"><div class="dev-map-grid"></div><span style="font-size:10px;color:var(--red);z-index:1;display:flex;align-items:center;gap:4px"><i class="ti ti-map-pin" style="font-size:16px"></i> Last GPS: +18.54°, −12.89°</span></div>
+      <div class="dev-acts"><button class="mini-b mb-cy" onclick="showToast('Ring sent to SENTINEL-13','success')"><i class="ti ti-phone-call"></i> Ring</button><button class="mini-b mb-or" onclick="openSecureModal('lock')"><i class="ti ti-lock"></i> Lock</button><button class="mini-b mb-re" onclick="openSecureModal('erase')"><i class="ti ti-trash"></i> Erase</button></div>
+    </div>
+    <div class="dev-card" style="border-color:#ccaa0033">
+      <div class="dev-top"><div><div class="dev-name">SENTINEL-04</div><div class="dev-id">ID: Use0104 · SIM Removed</div></div><div class="status-pill sp-wr">WARNING</div></div>
+      <div class="tele-row"><div class="tele-c"><div class="tele-lbl">Battery</div><div class="tele-val sv-or">34%</div></div><div class="tele-c"><div class="tele-lbl">SIM</div><div class="tele-val sv-re">Removed</div></div><div class="tele-c"><div class="tele-lbl">GPS</div><div class="tele-val sv-cy">Active</div></div></div>
+      <div class="card" style="margin:0 0 10px;padding:10px"><div class="gauge-row" style="gap:8px"><div class="gauge-c" style="padding:10px"><div class="gauge-label">Optimizer</div><div class="gauge-num" style="color:var(--purple)">75%</div><div class="gauge-bar"><div class="gauge-fill gf-pu" style="width:75%"></div></div></div><div class="gauge-c" style="padding:10px"><div class="gauge-label">Server</div><div class="gauge-num" style="color:var(--green)">95%</div><div class="gauge-bar"><div class="gauge-fill gf-gr" style="width:95%"></div></div></div></div></div>
+      <div class="dev-acts"><button class="mini-b mb-cy" onclick="showToast('Ring sent to SENTINEL-04','success')"><i class="ti ti-phone-call"></i> Ring</button><button class="mini-b mb-or" onclick="openSecureModal('lock')"><i class="ti ti-lock"></i> Lock</button><button class="mini-b mb-re" onclick="openSecureModal('erase')"><i class="ti ti-trash"></i> Erase</button></div>
+    </div>
+    <div class="card"><div class="card-title"><i class="ti ti-layout-grid"></i> Multi-Platform Blueprint</div><div style="display:flex;align-items:center;gap:10px;justify-content:center;padding:10px 0"><div style="text-align:center"><div style="background:#040d18;border:1px solid #00cc7733;border-radius:10px;padding:10px 12px;margin-bottom:5px;display:flex;align-items:center;justify-content:center"><i class="ti ti-device-laptop" style="font-size:24px;color:var(--green)"></i></div><div style="font-size:10px;color:var(--lo)">Laptop</div><div style="font-size:9px;color:var(--green);font-weight:600">Active</div></div><div style="color:var(--cyan);font-size:18px;animation:blink 2s infinite">→</div><div style="text-align:center"><div style="background:#040d18;border:1px solid #00d4ff33;border-radius:10px;padding:10px 12px;margin-bottom:5px;display:flex;align-items:center;justify-content:center"><i class="ti ti-device-mobile" style="font-size:24px;color:var(--cyan)"></i></div><div style="font-size:10px;color:var(--lo)">Mobile</div><div style="font-size:9px;color:var(--cyan);font-weight:600">Syncing</div></div><div style="color:var(--cyan);font-size:18px;animation:blink 2s infinite .5s">→</div><div style="text-align:center"><div style="background:#040d18;border:1px solid #cc44ff33;border-radius:10px;padding:10px 12px;margin-bottom:5px;display:flex;align-items:center;justify-content:center"><i class="ti ti-server" style="font-size:24px;color:var(--purple)"></i></div><div style="font-size:10px;color:var(--lo)">Server</div><div style="font-size:9px;color:var(--purple);font-weight:600">Real-time</div></div></div></div>
+  </div></div>
+  <div class="bottom-tab-bar">
+    <button class="tab-btn" onclick="switchTab('home',this)"><i class="ti ti-home"></i> Home</button>
+    <button class="tab-btn active" onclick="switchTab('device',this)"><i class="ti ti-devices"></i> Device</button>
+    <button class="tab-btn" onclick="switchTab('routine',this)"><i class="ti ti-calendar"></i> Routine</button>
+  </div>
+</div>
+
+<!-- ══════ ROUTINE ══════ -->
+<div class="screen" id="sc-routine">
+  <div class="sentinel-top-bar"><div class="stb-item"><div class="stb-dot online"></div> Sentinel Online</div><div class="stb-item"><i class="ti ti-clock"></i> <span class="live-clock-d">--:--</span></div></div>
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="openSidebar()"><i class="ti ti-menu-2"></i></button><svg class="eco-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div><div class="logo-name">Smart Routines</div><div class="logo-sub">Sentinel Timeline</div></div></div><div class="topbar-r"><button class="icon-btn"><i class="ti ti-bell"></i></button></div></div>
+  <div class="scroll"><div class="pad">
+    <div class="card"><div class="card-title"><i class="ti ti-clock"></i> Daily Schedule</div><div id="routines-list"></div><button class="add-btn" onclick="goTo('sc-addRoutine')"><i class="ti ti-plus"></i> Add / Edit Custom Routine</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-list"></i> Activity Logs</div>
+      <div class="log-item"><div class="log-dot ld-gr"></div><div><div class="log-ev">Wi-Fi Scan complete — Sentinel-13</div><div class="log-t">16:12 · Performance Optimization</div></div></div>
+      <div class="log-item"><div class="log-dot ld-re"></div><div><div class="log-ev">SIM Removal → SOS triggered via SMS</div><div class="log-t">16:22 · Deep Bypass Offline mode</div></div></div>
+      <div class="log-item"><div class="log-dot ld-cy"></div><div><div class="log-ev">Command Ring acknowledged — Sentinel-15</div><div class="log-t">16:32 · Agentic Action Log</div></div></div>
+      <div class="log-item"><div class="log-dot ld-or"></div><div><div class="log-ev">Battery 1% → Last-Breath SOS armed</div><div class="log-t">16:42 · Auto-Arming Active</div></div></div>
+      <div class="log-item"><div class="log-dot ld-gr"></div><div><div class="log-ev">GPS locked & location sent to trusted</div><div class="log-t">16:52 · Location Protocol</div></div></div>
+    </div>
+    <div class="card" style="border-color:#cc223322"><div class="card-title" style="color:#ff5566"><i class="ti ti-shield-lock"></i> Privacy Guard</div>
+      <div class="log-item"><div class="log-dot ld-re"></div><div style="flex:1"><div class="log-ev" style="color:#ff8890">4 apps — Suspicious permissions</div><div class="log-t">Background access detected</div></div><i class="ti ti-alert-triangle" style="color:var(--yellow);font-size:16px;flex-shrink:0"></i></div>
+      <div class="log-item"><div class="log-dot ld-or"></div><div style="flex:1"><div class="log-ev">4 mic/camera blocks active</div><div class="log-t">Continuous threat monitoring</div></div><i class="ti ti-microphone-off" style="color:var(--lo);font-size:16px;flex-shrink:0"></i></div>
+    </div>
+  </div></div>
+  <div class="bottom-tab-bar">
+    <button class="tab-btn" onclick="switchTab('home',this)"><i class="ti ti-home"></i> Home</button>
+    <button class="tab-btn" onclick="switchTab('device',this)"><i class="ti ti-devices"></i> Device</button>
+    <button class="tab-btn active" onclick="switchTab('routine',this)"><i class="ti ti-calendar"></i> Routine</button>
+  </div>
+</div>
+
+<!-- ══════ SETTINGS ══════ -->
+<div class="screen" id="sc-settings">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><svg class="eco-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div><div class="logo-name">Settings</div><div class="logo-sub">System Control</div></div></div><div class="topbar-r"><button class="icon-btn" onclick="openSidebar()"><i class="ti ti-menu-2"></i></button></div></div>
+  <div class="settings-wrap">
+    <div class="ss-head">1. Account</div>
+    <div class="ss-row" onclick="navTo('loginPage')"><div class="ss-icon si-cy"><i class="ti ti-user"></i></div><div class="ss-info"><div class="ss-name">Login</div><div class="ss-val">User126@email.com</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <div class="ss-row" onclick="navTo('activeDevices')"><div class="ss-icon si-pu"><i class="ti ti-devices"></i></div><div class="ss-info"><div class="ss-name">Active Device List</div><div class="ss-val" id="device-count-label">3 devices connected</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <div class="ss-row" onclick="navTo('emergency')"><div class="ss-icon si-re"><i class="ti ti-mail-forward"></i></div><div class="ss-info"><div class="ss-name">Emergency Contacts</div><div class="ss-val" id="ec-count-label">2 contacts verified</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <div class="ss-head">2. Appearance</div>
+    <div class="ss-row" onclick="toggleTheme()"><div class="ss-icon si-cy"><i class="ti ti-moon"></i></div><div class="ss-info"><div class="ss-name">Dark Mode</div><div class="ss-val" id="theme-status-label">Enabled</div></div><button class="tog on" id="settings-theme-tog" onclick="event.stopPropagation();toggleTheme()" style="flex-shrink:0"></button></div>
+    <div class="ss-head" style="padding-bottom:4px">Language</div>
+    <div style="padding:0 16px 12px;background:var(--bg2);border-bottom:1px solid var(--brd2)">
+      <div style="position:relative;margin-bottom:8px"><i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--lo);font-size:15px;pointer-events:none"></i><input type="text" placeholder="Search language…" oninput="filterSettingsLangs(this.value)" style="width:100%;background:var(--inp);border:1px solid var(--brd);border-radius:9px;padding:8px 12px 8px 32px;color:var(--hi);font-size:11px;outline:none;font-family:'Inter',sans-serif"/></div>
+      <div id="settings-lang-grid" style="display:flex;flex-wrap:wrap;gap:6px;max-height:120px;overflow-y:auto"></div>
+    </div>
+    <div class="ss-head">3. Notifications</div>
+    <div class="ss-row"><div class="ss-icon si-or"><i class="ti ti-bell"></i></div><div class="ss-info"><div class="ss-name">Notifications</div><div class="ss-val">All alerts enabled</div></div><button class="tog on" onclick="this.classList.toggle('on');this.classList.toggle('off')" style="flex-shrink:0"></button></div>
+    <div class="ss-row"><div class="ss-icon si-cy"><i class="ti ti-refresh"></i></div><div class="ss-info"><div class="ss-name">Synchronization</div><div class="ss-val">Real-time sync active</div></div><button class="tog on" onclick="this.classList.toggle('on');this.classList.toggle('off')" style="flex-shrink:0"></button></div>
+    <div class="ss-head">4. Help & Legal</div>
+    <div class="ss-row" onclick="navTo('about')"><div class="ss-icon si-pu"><i class="ti ti-info-circle"></i></div><div class="ss-info"><div class="ss-name">About EcoTrack AI</div><div class="ss-val">v2.2.0 · Sentinel-Logic</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <div class="ss-row" onclick="navTo('userManual')"><div class="ss-icon si-gr"><i class="ti ti-book"></i></div><div class="ss-info"><div class="ss-name">User Manual</div><div class="ss-val">How to use EcoTrack AI</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <div class="ss-row"><div class="ss-icon si-gr"><i class="ti ti-file-text"></i></div><div class="ss-info"><div class="ss-name">Terms & Conditions</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <div class="ss-row"><div class="ss-icon si-cy"><i class="ti ti-shield"></i></div><div class="ss-info"><div class="ss-name">Privacy Policy</div></div><i class="ti ti-chevron-right ss-arr"></i></div>
+    <!-- 4: Logout/Erase REMOVED from here — only in Login section -->
+  </div>
+</div>
+
+<!-- ══════ 3. LOGIN PAGE (Settings sub) ══════ -->
+<div class="screen" id="sc-loginPage">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><div><div class="logo-name">Account Login</div><div class="logo-sub">Manage your Sentinel account</div></div></div></div>
+  <div class="login-page-wrap">
+    <div class="lp-card">
+      <div class="card-title"><i class="ti ti-user-circle"></i> Account Information</div>
+      <div class="lp-field-row"><div class="lp-label">Full Name</div><div class="lp-value">User 126</div><span class="lp-edit" onclick="showToast('Name editing coming soon','success')">Edit</span></div>
+      <div class="lp-field-row"><div class="lp-label">Email</div><div class="lp-value">User126@email.com</div><span class="lp-edit" onclick="showToast('Email change requires OTP verification','success')">Change</span></div>
+      <div class="lp-field-row"><div class="lp-label">Phone</div><div class="lp-value">+91 98765 43210</div><span class="lp-edit" onclick="showToast('Phone update coming soon','success')">Edit</span></div>
+      <div class="lp-field-row"><div class="lp-label">Organization</div><div class="lp-value">DRDO Unit 4</div><span class="lp-edit">Edit</span></div>
+      <div class="lp-field-row"><div class="lp-label">Role</div><div class="lp-value">Admin</div></div>
+      <div class="lp-field-row" style="border:none"><div class="lp-label">Joined</div><div class="lp-value">Jan 2026</div></div>
+    </div>
+    <div class="lp-card">
+      <div class="card-title"><i class="ti ti-lock"></i> Security</div>
+      <div class="lp-field-row"><div class="lp-label">Password</div><div class="lp-value">••••••••••</div><span class="lp-edit" onclick="goTo('sc-forgot')">Change</span></div>
+      <div class="lp-field-row"><div class="lp-label">2FA</div><div class="lp-value">Email OTP</div><span class="lp-edit">Setup</span></div>
+      <div class="lp-field-row" style="border:none"><div class="lp-label">Sessions</div><div class="lp-value">3 active</div><span class="lp-edit" onclick="showToast('All other sessions revoked','success')">Revoke All</span></div>
+    </div>
+    <!-- Logout/Erase VISIBLE here (Login context) -->
+    <div style="display:flex;gap:8px;margin-top:4px;margin-bottom:20px">
+      <button style="flex:1;padding:11px;border-radius:9px;background:linear-gradient(135deg,#1a0c00,#160a00);border:1px solid #ff880033;color:var(--orange);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif;transition:all .2s" onclick="openSecureModal('logout')"><i class="ti ti-logout" style="font-size:16px"></i> Logout Device</button>
+      <button style="flex:1;padding:11px;border-radius:9px;background:linear-gradient(135deg,#1a0508,#160306);border:1px solid #ff334433;color:var(--red);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif;transition:all .2s" onclick="openSecureModal('erase')"><i class="ti ti-trash" style="font-size:16px"></i> Erase Data</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 3. ACTIVE DEVICE LIST ══════ -->
+<div class="screen" id="sc-activeDevices">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><div><div class="logo-name">Active Devices</div><div class="logo-sub">Linked Sentinel Agents</div></div></div><div class="topbar-r"><button class="icon-btn" onclick="showToast('Device scan initiated','success')"><i class="ti ti-refresh"></i></button></div></div>
+  <div class="adl-wrap">
+    <div class="adl-card">
+      <div class="card-title"><i class="ti ti-devices"></i> Linked Devices (3)</div>
+      <div id="adl-device-list"></div>
+    </div>
+    <div class="adl-card">
+      <div class="card-title"><i class="ti ti-info-circle"></i> Device Limit</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="flex:1;height:6px;background:var(--brd);border-radius:3px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#006688,#00d4ff);border-radius:3px"></div></div>
+        <span style="font-size:10px;color:var(--cyan);font-weight:600">3 / 5</span>
+      </div>
+      <div style="font-size:10px;color:var(--lo);line-height:1.5">You can link up to 5 Sentinel devices per account. Each device requires a unique registration. Remove a device to free up a slot.</div>
+    </div>
+    <button class="add-btn" onclick="showToast('New device registration form opening…','success')"><i class="ti ti-plus"></i> Add New Device</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════ 2. ABOUT ══════ -->
+<div class="screen" id="sc-about">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><svg class="eco-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div><div class="logo-name">About</div><div class="logo-sub">EcoTrack AI · Sentinel-Logic</div></div></div></div>
+  <div class="about-wrap">
+    <div class="about-hero">
+      <div class="about-logo-wrap"><svg width="72" height="72" viewBox="0 0 100 100" style="filter:drop-shadow(0 0 16px #00d4ff55);animation:floatY 3s ease-in-out infinite"><use href="#ecotrack-logo"/></svg></div>
+      <div class="about-version-badge"><i class="ti ti-rocket" style="font-size:13px"></i> Version 2.2.0 · Production</div>
+      <div class="about-title">EcoTrack AI</div>
+      <div class="about-sub">Autonomous Device Recovery & Security Agent<br/>Built on Sentinel-Logic Agentic Systems — FAR AWAY Hackathon</div>
+      <div class="about-chips">
+        <span class="about-chip ac-cy">🏆 Hackathon Build</span>
+        <span class="about-chip ac-gr">✅ Production Grade</span>
+        <span class="about-chip ac-or">📡 Offline Capable</span>
+        <span class="about-chip ac-re">🛡️ AI Security</span>
+        <span class="about-chip ac-pu">🤖 Agentic</span>
+      </div>
+    </div>
+
+    <div class="about-stat-row">
+      <div class="about-stat"><div class="about-stat-num" style="color:var(--green)">85%</div><div class="about-stat-lbl">System Health</div></div>
+      <div class="about-stat"><div class="about-stat-num">5</div><div class="about-stat-lbl">Core Features</div></div>
+      <div class="about-stat"><div class="about-stat-num" style="color:var(--orange)">30+</div><div class="about-stat-lbl">Languages</div></div>
+    </div>
+
+    <div class="card-title" style="margin-bottom:8px;padding:0 2px"><i class="ti ti-star"></i> Core Features</div>
+    <div class="about-feature-card">
+      <div class="af-icon" style="background:linear-gradient(135deg,#001628,#001a33)"><i class="ti ti-microphone" style="color:var(--cyan)"></i></div>
+      <div><div class="af-title">Offline Voice Wake Detection</div><div class="af-desc">TensorFlow Lite model listens for wake phrase even without internet. Triggers max-volume alarm + strobe light to locate the device in the dark or silent mode.</div></div>
+    </div>
+    <div class="about-feature-card">
+      <div class="af-icon" style="background:linear-gradient(135deg,#001610,#00cc7718)"><i class="ti ti-bluetooth" style="color:var(--green)"></i></div>
+      <div><div class="af-title">Intelligent Proximity Finder (BLE)</div><div class="af-desc">Uses Bluetooth Low Energy RSSI values to calculate distance. Displays a real-time Hot/Cold radar UI — no internet required at all.</div></div>
+    </div>
+    <div class="about-feature-card">
+      <div class="af-icon" style="background:linear-gradient(135deg,#160510,#ff334418)"><i class="ti ti-battery-1" style="color:var(--red)"></i></div>
+      <div><div class="af-title">Last Breath SOS</div><div class="af-desc">When battery hits 1%, a BroadcastReceiver fires automatically — blasting high-accuracy GPS coordinates via SMS to all emergency contacts. Works offline.</div></div>
+    </div>
+    <div class="about-feature-card">
+      <div class="af-icon" style="background:linear-gradient(135deg,#160a00,#ff880018)"><i class="ti ti-shield-exclamation" style="color:var(--orange)"></i></div>
+      <div><div class="af-title">Theft Detection (Accelerometer)</div><div class="af-desc">Monitors sudden accelerometer changes to track theft risk score. Abnormal movement patterns trigger silent alert and GPS snapshot.</div></div>
+    </div>
+    <div class="about-feature-card">
+      <div class="af-icon" style="background:linear-gradient(135deg,#100016,#cc44ff18)"><i class="ti ti-map-2" style="color:var(--purple)"></i></div>
+      <div><div class="af-title">Safe Zone Intelligence</div><div class="af-desc">Google Play Geofencing API detects when you leave your device behind in a defined safe zone. Immediate push notification + email alert dispatched.</div></div>
+    </div>
+
+    <div class="card-title" style="margin-bottom:8px;padding:0 2px;margin-top:4px"><i class="ti ti-code"></i> Tech Stack</div>
+    <div class="about-tech-row">
+      <span class="tech-tag">Kotlin</span><span class="tech-tag">Jetpack Compose</span><span class="tech-tag">MVVM</span><span class="tech-tag">Clean Architecture</span><span class="tech-tag">Dagger Hilt</span><span class="tech-tag">TensorFlow Lite</span><span class="tech-tag">BLE RSSI</span><span class="tech-tag">Android Foreground Services</span><span class="tech-tag">BroadcastReceivers</span><span class="tech-tag">Google Geofencing</span><span class="tech-tag">SMS API</span><span class="tech-tag">GPS</span>
+    </div>
+
+    <div class="card" style="border-color:#00d4ff22">
+      <div class="card-title"><i class="ti ti-info-circle"></i> App Info</div>
+      <div class="lp-field-row" style="padding:8px 0;border-bottom:1px solid var(--brd2)"><div class="lp-label">Version</div><div class="lp-value">2.2.0 (Build 2026.1)</div></div>
+      <div class="lp-field-row" style="padding:8px 0;border-bottom:1px solid var(--brd2)"><div class="lp-label">Platform</div><div class="lp-value">Android + Web PWA</div></div>
+      <div class="lp-field-row" style="padding:8px 0;border-bottom:1px solid var(--brd2)"><div class="lp-label">Built for</div><div class="lp-value">FAR AWAY Hackathon</div></div>
+      <div class="lp-field-row" style="padding:8px 0;border-bottom:1px solid var(--brd2)"><div class="lp-label">Framework</div><div class="lp-value">Sentinel-Logic Agentic Systems</div></div>
+      <div class="lp-field-row" style="padding:8px 0"><div class="lp-label">Year</div><div class="lp-value">2026</div></div>
+    </div>
+    <div style="text-align:center;padding:16px 0;font-size:10px;color:var(--lo);line-height:1.8">
+      Created by <span style="color:var(--cyan);font-weight:600">EcoTrack AI</span><br/>
+      Sentinel-Logic · Autonomous Device Guardian<br/>
+      © 2026 All rights reserved
+    </div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════ USER MANUAL ══════ -->
+<div class="screen" id="sc-userManual">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><svg class="eco-logo-svg" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg><div><div class="logo-name">User Manual</div><div class="logo-sub">Complete Guide</div></div></div></div>
+  <div style="flex:1;overflow-y:auto;padding:14px 16px">
+    <div class="card"><div class="card-title"><i class="ti ti-rocket"></i> What is EcoTrack AI?</div><p style="font-size:11px;color:var(--lo);line-height:1.7">EcoTrack AI is an autonomous device guardian by Sentinel-Logic. It protects, tracks, and manages your devices in real time — even offline, at 1% battery, or with SIM removed. Built for the FAR AWAY Hackathon.</p></div>
+    <div class="card"><div class="card-title"><i class="ti ti-player-play"></i> Getting Started</div>
+      <div class="log-item"><div class="log-dot ld-cy"></div><div><div class="log-ev" style="font-weight:600;color:var(--hi)">1. Sign Up / New Registration</div><div class="log-t">Fill Organization, Role, Device Name, password. Verify email.</div></div></div>
+      <div class="log-item"><div class="log-dot ld-gr"></div><div><div class="log-ev" style="font-weight:600;color:var(--hi)">2. Add Emergency Contacts</div><div class="log-t">Settings → Emergency Contacts → Add email → Verify with OTP.</div></div></div>
+      <div class="log-item"><div class="log-dot ld-or"></div><div><div class="log-ev" style="font-weight:600;color:var(--hi)">3. Set Smart Routines</div><div class="log-t">Routine tab → Add Routine → Set time, days, mode type.</div></div></div>
+      <div class="log-item" style="border:none"><div class="log-dot ld-pu" style="background:var(--purple);color:var(--purple);box-shadow:0 0 6px var(--purple)"></div><div><div class="log-ev" style="font-weight:600;color:var(--hi)">4. Monitor Devices</div><div class="log-t">Device tab → view status, send Ring/Lock/Erase commands.</div></div></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════ EMERGENCY CONTACTS ══════ -->
+<div class="screen" id="sc-emergency">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><div><div class="logo-name" style="color:var(--red)">Emergency Contacts</div><div class="logo-sub">SOS Email Network</div></div></div></div>
+  <div class="ec-wrap">
+    <div class="ec-note"><i class="ti ti-info-circle" style="font-size:14px;margin-right:4px"></i><b>How it works:</b> On Last-Breath SOS (1% battery), GPS + alerts are sent instantly to ALL verified contacts below.</div>
+    <div id="ec-list"></div>
+    <div class="ec-add-form" id="ec-add-form" style="display:none">
+      <div class="card-title" style="margin-bottom:10px"><i class="ti ti-mail-plus" style="color:var(--cyan)"></i> Add Emergency Email</div>
+      <div id="ec-form-step1"><div class="field-lbl">Name (optional)</div><div class="field-wrap" style="margin-bottom:10px"><i class="ti ti-user fi"></i><input type="text" id="ec-new-name" placeholder="e.g. Mom, John"/></div><div class="field-lbl">Email Address</div><div class="field-wrap" style="margin-bottom:10px"><i class="ti ti-mail fi"></i><input type="email" id="ec-new-email" placeholder="trusted@email.com"/></div><div style="display:flex;gap:8px"><button class="login-btn" style="margin:0;flex:1" onclick="sendEcOTP()"><i class="ti ti-send"></i> Send OTP</button><button class="m-cancel" style="flex:.5" onclick="hideEcForm()">Cancel</button></div></div>
+      <div id="ec-form-step2" style="display:none"><div class="otp-sent-info"><i class="ti ti-mail-check" style="color:var(--cyan);font-size:16px;flex-shrink:0"></i> OTP sent to <span id="ec-otp-target" style="color:var(--cyan);font-weight:600"></span></div><div class="otp-input"><input class="otp-box" maxlength="1" oninput="otpNext(this,'ec')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'ec')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'ec')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'ec')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'ec')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'ec')"/></div><div style="font-size:10px;color:var(--lo);text-align:center;margin-bottom:12px">Demo: any 6 digits · <a style="color:var(--cyan);cursor:pointer" onclick="resendOTP('ec')">Resend</a></div><div style="display:flex;gap:8px"><button class="login-btn" style="margin:0;flex:1" onclick="verifyEcOTP()"><i class="ti ti-check"></i> Verify & Add</button><button class="m-cancel" style="flex:.5" onclick="document.getElementById('ec-form-step1').style.display='block';document.getElementById('ec-form-step2').style.display='none'">Back</button></div></div>
+    </div>
+    <button class="add-btn" id="ec-add-btn" onclick="showEcForm()"><i class="ti ti-plus"></i> Add Emergency Email</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════ ADD ROUTINE ══════ -->
+<div class="screen" id="sc-addRoutine">
+  <div class="topbar"><div class="logo-row"><button class="icon-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i></button><div><div class="logo-name">Add Routine</div><div class="logo-sub">Schedule a smart routine</div></div></div></div>
+  <div class="ar-wrap">
+    <div class="ar-card"><div class="card-title"><i class="ti ti-edit"></i> Routine Name</div><div class="field-wrap" style="margin-bottom:8px"><i class="ti ti-tag fi"></i><input type="text" id="ar-name" placeholder="e.g. Morning Focus, Gym Time…"/></div><div class="field-wrap" style="margin-bottom:0"><i class="ti ti-align-left fi"></i><input type="text" id="ar-desc" placeholder="Short description (optional)"/></div></div>
+    <div class="ar-card"><div class="card-title"><i class="ti ti-clock"></i> Time & Days</div><div class="field-lbl">Start Time</div><div class="field-wrap" style="margin-bottom:12px"><i class="ti ti-clock fi"></i><input type="time" id="ar-time" style="padding-left:38px"/></div><div class="field-lbl">Active Days</div><div class="days-grid" id="days-grid"><button class="day-btn sel" onclick="toggleDay(this)">Mon</button><button class="day-btn sel" onclick="toggleDay(this)">Tue</button><button class="day-btn sel" onclick="toggleDay(this)">Wed</button><button class="day-btn sel" onclick="toggleDay(this)">Thu</button><button class="day-btn sel" onclick="toggleDay(this)">Fri</button><button class="day-btn" onclick="toggleDay(this)">Sat</button><button class="day-btn" onclick="toggleDay(this)">Sun</button></div></div>
+    <div class="ar-card"><div class="card-title"><i class="ti ti-category"></i> Mode Type</div><div class="mode-grid"><button class="mode-opt sel-w" data-mode="w" onclick="selectMode(this)"><i class="ti ti-briefcase"></i>Work</button><button class="mode-opt" data-mode="f" onclick="selectMode(this)"><i class="ti ti-target"></i>Focus</button><button class="mode-opt" data-mode="h" onclick="selectMode(this)"><i class="ti ti-home"></i>Home</button><button class="mode-opt" data-mode="c" onclick="selectMode(this)"><i class="ti ti-stars"></i>Custom</button></div></div>
+    <button class="login-btn" style="margin-top:4px" onclick="saveNewRoutine()"><i class="ti ti-device-floppy"></i> Save Routine</button>
+    <button class="add-btn" onclick="goBack()"><i class="ti ti-x"></i> Cancel</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════ SIDEBAR ══════ -->
+<div class="sidebar-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="sb-avatar"><svg width="22" height="22" viewBox="0 0 100 100"><use href="#ecotrack-logo"/></svg></div><div><div class="sb-uname">EcoTrack AI</div><div class="sb-email">User126@email.com</div></div></div>
+    <div style="background:#001628;border:1px solid #00d4ff22;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--lo)">System Health</span><span style="font-size:12px;font-weight:600;color:var(--green)">85% — Excellent</span></div>
+  </div>
+  <div class="sb-menu">
+    <div class="sb-section">Navigation</div>
+    <div class="sb-item active" onclick="navTo('home')"><i class="ti ti-home"></i> Home</div>
+    <div class="sb-item" onclick="navTo('device')"><i class="ti ti-devices"></i> Device</div>
+    <div class="sb-section">Features</div>
+    <div class="sb-item" onclick="navTo('routine')"><i class="ti ti-calendar"></i> Routine</div>
+    <div class="sb-item" onclick="navTo('routine')"><i class="ti ti-list"></i> Activity Logs <span class="sb-badge">17</span></div>
+    <div class="sb-item" onclick="navTo('device')"><i class="ti ti-gauge"></i> Optimizer</div>
+    <div class="sb-section">Security</div>
+    <div class="sb-item" onclick="navTo('emergency')"><i class="ti ti-mail-forward" style="color:var(--red)"></i> Emergency Contacts</div>
+    <div class="sb-item" onclick="navTo('settings')"><i class="ti ti-settings"></i> Settings</div>
+    <div class="sb-item" onclick="navTo('userManual')"><i class="ti ti-book"></i> User Manual</div>
+    <div class="sb-item" onclick="navTo('about')"><i class="ti ti-info-circle"></i> About</div>
+  </div>
+  <div class="sb-foot"><button class="sb-logout" onclick="openSecureModal('logout')"><i class="ti ti-logout"></i> Logout Device</button></div>
+</div>
+
+<!-- ══════ SECURE MODAL ══════ -->
+<div class="modal-bg" id="secure-modal">
+  <div class="modal-box" style="border-color:#00d4ff44;width:300px">
+    <div class="sec-step active" id="sv-step1">
+      <div class="modal-ico"><i class="ti ti-shield-lock" id="sv-ico" style="color:var(--orange)"></i></div>
+      <div class="modal-tit" id="sv-title">Confirm Action</div>
+      <div class="modal-desc" id="sv-desc">This action requires verification.</div>
+      <div style="background:#160a00;border:1px solid #ff880033;border-radius:8px;padding:8px 12px;font-size:10px;color:var(--orange);margin-bottom:14px;text-align:left;line-height:1.5"><i class="ti ti-alert-triangle" style="font-size:13px"></i> <span id="sv-warning">Proceed with caution.</span></div>
+      <div style="margin-bottom:12px"><div class="field-lbl" style="text-align:left" id="sv-confirm-lbl">Type CONFIRM to proceed</div><input class="sec-type-confirm" id="sv-type-input" placeholder="Type here…" oninput="checkConfirmWord()"/></div>
+      <div class="modal-btns"><button class="m-cancel" onclick="closeSecureModal()">Cancel</button><button class="m-confirm mc-or" id="sv-next-btn" onclick="goToVerifyStep()" disabled style="opacity:.4;cursor:not-allowed">Continue</button></div>
+    </div>
+    <div class="sec-step" id="sv-step2">
+      <div style="font-size:13px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;margin-bottom:6px">Verify Identity</div>
+      <div class="modal-desc">Choose verification method</div>
+      <div class="sec-method-btns"><button class="sec-method-btn smb-bio" onclick="chooseBiometric()"><i class="ti ti-fingerprint"></i> Fingerprint / Passkey</button><button class="sec-method-btn smb-otp" onclick="chooseOTP()"><i class="ti ti-mail"></i> Send OTP to Email</button></div>
+      <button class="m-cancel" style="width:100%" onclick="closeSecureModal()">Cancel</button>
+    </div>
+    <div class="sec-step" id="sv-step3a">
+      <div style="font-size:13px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;margin-bottom:6px">Biometric</div>
+      <div class="modal-desc">Touch sensor or use Face ID</div>
+      <div class="fingerprint-anim"><svg viewBox="0 0 64 64" style="width:64px;height:64px"><circle cx="32" cy="32" r="30" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity=".3"/><path d="M32 8C18.7 8 8 18.7 8 32s10.7 24 24 24 24-10.7 24-24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" opacity=".6"/><path d="M32 15c-9.4 0-17 7.6-17 17 0 4.3 1.6 8.2 4.2 11.2" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"/><path d="M32 22c-5.5 0-10 4.5-10 10 0 2.2.7 4.2 1.9 5.8" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="32" r="2" fill="var(--cyan)"/></svg></div>
+      <div id="sv-bio-status" style="font-size:11px;color:var(--cyan);margin-bottom:14px;min-height:16px;text-align:center"></div>
+      <button class="m-cancel" style="width:100%" onclick="closeSecureModal()">Cancel</button>
+    </div>
+    <div class="sec-step" id="sv-step3b">
+      <div style="font-size:13px;font-weight:700;color:var(--hi);font-family:'Rajdhani',sans-serif;margin-bottom:6px">Email OTP</div>
+      <div class="otp-sent-info" style="margin-bottom:12px;text-align:left"><i class="ti ti-mail-check" style="color:var(--cyan);font-size:16px;flex-shrink:0"></i> OTP sent to your registered email</div>
+      <div class="otp-input" id="sv-otp-inputs"><input class="otp-box" maxlength="1" oninput="otpNext(this,'sv')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'sv')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'sv')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'sv')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'sv')"/><input class="otp-box" maxlength="1" oninput="otpNext(this,'sv')"/></div>
+      <div style="font-size:10px;color:var(--lo);margin-bottom:12px">Any 6 digits · <a style="color:var(--cyan);cursor:pointer" onclick="resendOTP('sv')">Resend</a></div>
+      <button class="m-confirm mc-cy" style="width:100%;margin-bottom:8px" onclick="verifySecureOTP()">Verify & Execute</button>
+      <button class="m-cancel" style="width:100%" onclick="closeSecureModal()">Cancel</button>
+    </div>
+    <div class="sec-step" id="sv-step4">
+      <div class="modal-ico"><i class="ti ti-circle-check" style="color:var(--green);filter:drop-shadow(0 0 8px #00cc7755)"></i></div>
+      <div class="modal-tit" id="sv-success-tit">Action Executed</div>
+      <div class="modal-desc">Security alert sent to <span id="sv-contact-count">2</span> emergency contacts.</div>
+      <div style="background:linear-gradient(135deg,#001610,#001a12);border:1px solid #00cc7733;border-radius:8px;padding:8px 12px;font-size:10px;color:var(--green);margin-bottom:14px;line-height:1.5">✅ Logged · 📧 Alerts dispatched · 🕐 <span id="sv-timestamp">--</span></div>
+      <button class="m-confirm mc-cy" style="width:100%" onclick="executeAction()">OK</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+</div><!-- /phone-frame -->
+
+<script>
+/*
+  MULTI-FILE BUILD: Split JS is in /app-js/
+  app.js           - init, nav, theme, lang, clock
+  map.js           - map mode, BLE, GPS simulation
+  auth.js          - login, register, forgot password
+  device-tracker.js - secure modal, lock/erase
+  settings.js      - routines, emergency, OTP
+
+  For production: replace this script block with
+  individual <script src="app-js/app.js"> tags.
+*/
+
+/* ═══ API PLACEHOLDER LAYER ═══
+  TODO: Replace stubs below with real endpoints
+
+  POST /auth/login          → { email, password }          → { userId, token }
+  POST /auth/register       → { name, email, phone, pwd }  → { userId, token }
+  POST /auth/new-reg        → { org, role, device, email, pwd } → { agentId, token }
+  GET  /devices             →                               → [{ id, name, status, battery, gsm, gps }]
+  POST /devices/:id/command → { cmd: ring|lock|erase }     → { success, timestamp }
+  POST /auth/forgot         → { email }                    → { sent: true }
+  POST /auth/verify-otp     → { email, otp }               → { verified: true }
+  GET  /emergency-contacts  →                               → [{ id, email, status }]
+  POST /emergency-contacts  → { email, name }              → { id, otp_sent: true }
+  GET  /location/online     →                               → { lat, lon, accuracy }  (Google Find My Device)
+  GET  /location/offline    →                               → { rssi, distance, hot_cold }  (BLE)
+*/
+
+var LANGS=[
+  {code:'en',name:'English',flag:'🇬🇧',dir:'ltr'},{code:'hi',name:'हिन्दी',flag:'🇮🇳',dir:'ltr'},
+  {code:'es',name:'Español',flag:'🇪🇸',dir:'ltr'},{code:'fr',name:'Français',flag:'🇫🇷',dir:'ltr'},
+  {code:'de',name:'Deutsch',flag:'🇩🇪',dir:'ltr'},{code:'zh',name:'中文',flag:'🇨🇳',dir:'ltr'},
+  {code:'ja',name:'日本語',flag:'🇯🇵',dir:'ltr'},{code:'ar',name:'العربية',flag:'🇸🇦',dir:'rtl'},
+  {code:'ru',name:'Русский',flag:'🇷🇺',dir:'ltr'},{code:'pt',name:'Português',flag:'🇧🇷',dir:'ltr'},
+  {code:'id',name:'Indonesia',flag:'🇮🇩',dir:'ltr'},{code:'bn',name:'বাংলা',flag:'🇧🇩',dir:'ltr'},
+  {code:'ur',name:'اردو',flag:'🇵🇰',dir:'rtl'},{code:'ko',name:'한국어',flag:'🇰🇷',dir:'ltr'},
+  {code:'tr',name:'Türkçe',flag:'🇹🇷',dir:'ltr'},{code:'vi',name:'Tiếng Việt',flag:'🇻🇳',dir:'ltr'},
+  {code:'it',name:'Italiano',flag:'🇮🇹',dir:'ltr'},{code:'pl',name:'Polski',flag:'🇵🇱',dir:'ltr'},
+  {code:'nl',name:'Nederlands',flag:'🇳🇱',dir:'ltr'},{code:'th',name:'ภาษาไทย',flag:'🇹🇭',dir:'ltr'},
+  {code:'he',name:'עברית',flag:'🇮🇱',dir:'rtl'},{code:'fa',name:'فارسی',flag:'🇮🇷',dir:'rtl'},
+  {code:'ms',name:'Melayu',flag:'🇲🇾',dir:'ltr'},{code:'ta',name:'தமிழ்',flag:'🇮🇳',dir:'ltr'},
+  {code:'te',name:'తెలుగు',flag:'🇮🇳',dir:'ltr'},{code:'mr',name:'मराठी',flag:'🇮🇳',dir:'ltr'},
+  {code:'sv',name:'Svenska',flag:'🇸🇪',dir:'ltr'},{code:'uk',name:'Українська',flag:'🇺🇦',dir:'ltr'},
+  {code:'ro',name:'Română',flag:'🇷🇴',dir:'ltr'},{code:'cs',name:'Čeština',flag:'🇨🇿',dir:'ltr'}
+];
+var T={
+  en:{tagline:'Sentinel-Logic · Autonomous Device Guardian',signin_title:'Sign in to Sentinel',signin_sub:'Verified device access required',email_label:'Email Address',pass_label:'Password',forgot_pass:'Forgot password?',signin_btn:'Sign In to Sentinel',or_continue:'or continue with',google_btn:'Sign in with Google',new_user:'New device?',register_link:'Register',new_reg_link:'New Registration',reg_title:'Create Account',reg_sub:'Join the Sentinel network',fullname_label:'Full Name',phone_label:'Phone Number',confirm_pass:'Confirm Password',terms_agree:'I agree to the Terms & Conditions and Privacy Policy',create_account:'Create Account',have_account:'Already have an account?',signin_link:'Sign In',home:'Home',device:'Device',routine:'Routine',settings:'Settings',workflow_trace:'Agentic Workflow Trace',voice_cmd:'Voice Command · Live GPS Map',adv_vitals:'Advanced Sentinel Vitals',ring:'RING',closed_loop:'CLOSED-LOOP',lock_device:'LOCK DEVICE',erase_data:'ERASE DATA',sys_vitals:'System Vitals',daily_schedule:'Daily Schedule',activity_logs:'Activity Logs',privacy_guard:'Privacy Guard',smart_routines:'Smart Routines',sentinel_devices:'Sentinel Devices',dark_mode:'Dark Mode',language:'Language',notifications:'Notifications',add_routine:'Add / Edit Custom Routine'},
+  hi:{tagline:'सेंटिनल-लॉजिक · स्वायत्त डिवाइस गार्डियन',signin_title:'सेंटिनल में साइन इन',signin_sub:'सत्यापित एक्सेस आवश्यक',email_label:'ईमेल पता',pass_label:'पासवर्ड',forgot_pass:'पासवर्ड भूल गए?',signin_btn:'सेंटिनल में साइन इन करें',or_continue:'या जारी रखें',google_btn:'Google से साइन इन',new_user:'नया डिवाइस?',register_link:'रजिस्टर',new_reg_link:'नया पंजीकरण',reg_title:'खाता बनाएं',reg_sub:'सेंटिनल नेटवर्क से जुड़ें',fullname_label:'पूरा नाम',phone_label:'फ़ोन नंबर',confirm_pass:'पासवर्ड की पुष्टि',terms_agree:'मैं नियम और गोपनीयता नीति से सहमत हूं',create_account:'खाता बनाएं',have_account:'पहले से खाता है?',signin_link:'साइन इन',home:'होम',device:'डिवाइस',routine:'रूटीन',settings:'सेटिंग्स',ring:'रिंग',lock_device:'लॉक',erase_data:'मिटाएं',sys_vitals:'सिस्टम विटल्स'},
+  es:{tagline:'Sentinel-Logic · Guardián Autónomo',signin_title:'Iniciar sesión en Sentinel',signin_sub:'Acceso verificado requerido',email_label:'Correo electrónico',pass_label:'Contraseña',forgot_pass:'¿Olvidaste la contraseña?',signin_btn:'Iniciar sesión',or_continue:'o continuar con',google_btn:'Iniciar con Google',new_user:'¿Nuevo dispositivo?',register_link:'Registrarse',new_reg_link:'Nuevo Registro',home:'Inicio',device:'Dispositivo',routine:'Rutina',settings:'Configuración',ring:'LLAMAR',lock_device:'BLOQUEAR',erase_data:'BORRAR'},
+  ar:{tagline:'سنتينل-لوجيك · حارس الأجهزة',signin_title:'تسجيل الدخول',signin_sub:'مطلوب وصول محقق',email_label:'البريد الإلكتروني',pass_label:'كلمة المرور',forgot_pass:'نسيت كلمة المرور؟',signin_btn:'تسجيل الدخول',or_continue:'أو المتابعة',google_btn:'بجوجل',home:'الرئيسية',device:'الجهاز',routine:'الروتين',settings:'الإعدادات',ring:'رنين',lock_device:'قفل',erase_data:'مسح'}
+};
+
+var routines=[
+  {id:1,name:'Work Mode',time:'9:00 AM',desc:'DRDO Focus',type:'w',enabled:true},
+  {id:2,name:'Focus Mode',time:'5:05 AM',desc:'Pro Focus',type:'f',enabled:true},
+  {id:3,name:'Focus Mode',time:'6:55 AM',desc:'LNC Focus',type:'f',enabled:false},
+  {id:4,name:'Home Mode',time:'6:00 PM',desc:'DID Home',type:'h',enabled:true}
+];
+var emergencyContacts=[
+  {id:1,name:'Primary',email:'User126@email.com',role:'Primary Account',status:'primary'},
+  {id:2,name:'Mom',email:'mom@email.com',role:'Family',status:'verified'}
+];
+var activeDevices=[
+  {id:1,name:'SENTINEL-13',type:'mobile',detail:'Android 14 · ID: Use0284',status:'alert',color:'var(--red)'},
+  {id:2,name:'SENTINEL-04',type:'mobile',detail:'Android 13 · ID: Use0104',status:'warning',color:'var(--orange)'},
+  {id:3,name:'SENTINEL-WEB',type:'laptop',detail:'Chrome 121 · Web App',status:'online',color:'var(--green)'}
+];
+
+var curLang='en',curTheme='dark',openMenuId=null,pendingAction=null,navHistory=[],curMapMode='online',selectedMode='w';
+
+(function init(){
+  setTheme('dark');
+  renderLangLists();
+  renderSettingsLangs(LANGS);
+  updateClock();
+  setInterval(updateClock,1000);
+  applyLang('en');
+  renderRoutines();
+  renderEmergencyContacts();
+  renderActiveDevices();
+  document.addEventListener('click',function(e){if(!e.target.closest('.lang-dropdown-wrap'))closeAllMenus()});
+})();
+
+/* NAVIGATION */
+function goTo(id){
+  var cur=document.querySelector('.screen.active');
+  if(cur&&cur.id!==id)navHistory.push(cur.id);
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  var el=document.getElementById(id);
+  if(el)el.classList.add('active');
+}
+function goBack(){
+  if(navHistory.length>0){var p=navHistory.pop();document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});var el=document.getElementById(p);if(el)el.classList.add('active')}
+  else goTo('sc-home');
+}
+function switchTab(tab,btn){
+  goTo('sc-'+tab);
+  if(btn){btn.closest('.bottom-tab-bar').querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
+  updateDesktopNav(tab);
+}
+function navTo(tab){
+  closeSidebar();
+  var map={settings:'sc-settings',userManual:'sc-userManual',emergency:'sc-emergency',about:'sc-about',loginPage:'sc-loginPage',activeDevices:'sc-activeDevices',home:'sc-home',device:'sc-device',routine:'sc-routine'};
+  if(map[tab])goTo(map[tab]);
+  updateDesktopNav(tab);
+}
+function updateDesktopNav(tab){
+  document.querySelectorAll('.dn-item').forEach(function(i){i.classList.remove('active')});
+  var dn=document.getElementById('dn-'+tab);
+  if(dn)dn.classList.add('active');
+}
+
+/* SIDEBAR */
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('open')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
+
+/* MAP MODE */
+function switchMapMode(mode){
+  curMapMode=mode;
+  var ob=document.getElementById('mmt-online');
+  var ofb=document.getElementById('mmt-offline');
+  if(mode==='online'){ob.className='mmt-btn active online';ofb.className='mmt-btn offline';document.getElementById('map-label-main').innerHTML='<i class="ti ti-map-pin" style="font-size:12px"></i> Online · Find My Device API';}
+  else{ob.className='mmt-btn online';ofb.className='mmt-btn active offline';document.getElementById('map-label-main').innerHTML='<i class="ti ti-bluetooth" style="font-size:12px"></i> Offline · BLE Proximity Tracker';}
+  var vb=document.getElementById('voice-banner-txt');
+  if(vb)vb.textContent=mode==='online'?'Tap mic → Start Live Track (Online)':'Tap mic → BLE Hot/Cold Radar (Offline)';
+}
+function openMapOverlay(mode){
+  var ol=document.getElementById('map-overlay-'+mode);
+  if(ol){closeMapOverlay();ol.classList.add('show');}
+  if(mode==='online'){simulateFindDevice();}else{simulateBLE();}
+}
+function closeMapOverlay(){document.querySelectorAll('.map-overlay').forEach(function(o){o.classList.remove('show')})}
+function triggerFindDevice(){
+  /* TODO: GET /location/online → Google Find My Device API */
+  showToast('Live tracking started via Find My Device API','success');
+  var s=document.getElementById('find-status');
+  if(s)s.textContent='📍 GPS Acquired — Tracking active…';
+}
+function simulateFindDevice(){
+  var s=document.getElementById('find-status');
+  var c=document.getElementById('find-coords');
+  var lats=['28.6139','28.6145','28.6132','28.6155'];
+  var lons=['77.2090','77.2095','77.2085','77.2098'];
+  var i=0;
+  var t=setInterval(function(){
+    if(!document.getElementById('map-overlay-online').classList.contains('show')){clearInterval(t);return;}
+    if(s)s.textContent=i===0?'Acquiring GPS…':(i===1?'Cell tower assist…':(i===2?'High-accuracy GPS locked':'📍 Live tracking…'));
+    if(c&&i>0)c.textContent='Lat: +'+lats[i]+'° · Lon: +'+lons[i]+'°';
+    i=(i+1)%4;
+  },1200);
+}
+function simulateBLE(){
+  var signals=['🔥 HOT — Very close! (<1m)','🌡 WARM — Getting closer (~3m)','❄️ COLD — Moving away (~8m)','🌡 WARM — Getting closer (~4m)'];
+  var rssi=['-45 dBm · <1m','-67 dBm · ~3m','-82 dBm · ~8m','-71 dBm · ~4m'];
+  var i=0;
+  var t=setInterval(function(){
+    if(!document.getElementById('map-overlay-offline').classList.contains('show')){clearInterval(t);return;}
+    var sig=document.getElementById('ble-signal');
+    var dist=document.getElementById('ble-dist');
+    var colors=['var(--red)','var(--orange)','var(--cyan)','var(--orange)'];
+    if(sig){sig.textContent=signals[i];sig.style.color=colors[i];}
+    if(dist)dist.textContent='BLE RSSI: '+rssi[i];
+    i=(i+1)%4;
+  },1500);
+}
+
+/* THEME */
+function setTheme(t){
+  curTheme=t;
+  document.documentElement.setAttribute('data-theme',t);
+  var isDark=t==='dark';
+  var icon=isDark?'ti-sun':'ti-moon';
+  ['theme-icon-login','theme-icon-reg','theme-icon-newreg','theme-icon-home','theme-icon-forgot','dn-theme-icon'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='ti '+icon});
+  var stl=document.getElementById('settings-theme-tog');if(stl)stl.className=isDark?'tog on':'tog off';
+  var stll=document.getElementById('theme-status-label');if(stll)stll.textContent=isDark?'Enabled':'Disabled';
+}
+function toggleTheme(){setTheme(curTheme==='dark'?'light':'dark')}
+
+/* LANGUAGE */
+function renderLangLists(){['login','reg','newreg','home','desktop'].forEach(function(ctx){renderList(ctx,LANGS)})}
+function renderList(ctx,list){
+  var c=document.getElementById('lang-list-'+ctx);if(!c)return;c.innerHTML='';
+  list.forEach(function(l){var d=document.createElement('div');d.className='lang-option'+(l.code===curLang?' active':'');d.innerHTML='<span class="flag">'+l.flag+'</span> '+l.name;d.onclick=function(e){e.stopPropagation();selectLang(l.code);closeAllMenus()};c.appendChild(d)});
+}
+function filterLangs(q,ctx){renderList(ctx,LANGS.filter(function(l){return l.name.toLowerCase().indexOf(q.toLowerCase())>-1}))}
+function toggleLangMenu(ctx){
+  var menuId='lang-menu-'+ctx;
+  if(openMenuId&&openMenuId!==menuId){var old=document.getElementById(openMenuId);if(old)old.style.display='none';}
+  var m=document.getElementById(menuId);if(!m)return;
+  var showing=m.style.display==='block';m.style.display=showing?'none':'block';openMenuId=showing?null:menuId;
+  if(!showing){var inp=m.querySelector('input');if(inp){inp.value='';filterLangs('',ctx);}}
+}
+function closeAllMenus(){document.querySelectorAll('.lang-dropdown').forEach(function(m){m.style.display='none'});openMenuId=null}
+function renderSettingsLangs(list){
+  var g=document.getElementById('settings-lang-grid');if(!g)return;g.innerHTML='';
+  list.forEach(function(l){var b=document.createElement('button');b.style.cssText='padding:5px 10px;border-radius:7px;border:1px solid '+(l.code===curLang?'var(--cyan)':'var(--brd)')+';color:'+(l.code===curLang?'var(--cyan)':'var(--lo)')+';background:'+(l.code===curLang?'#00d4ff12':'none')+';font-size:10px;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s;display:flex;align-items:center;gap:4px';b.innerHTML='<span>'+l.flag+'</span><span>'+l.name+'</span>';b.onclick=function(){selectLang(l.code)};g.appendChild(b)});
+}
+function filterSettingsLangs(q){renderSettingsLangs(LANGS.filter(function(l){return l.name.toLowerCase().indexOf(q.toLowerCase())>-1||l.code.indexOf(q.toLowerCase())>-1}))}
+function selectLang(code){
+  curLang=code;var l=LANGS.find(function(x){return x.code===code});if(!l)return;
+  document.documentElement.setAttribute('dir',l.dir);
+  ['login','reg','newreg','home','desktop'].forEach(function(ctx){var lbl=document.getElementById('lang-label-'+ctx);if(lbl)lbl.textContent=code.toUpperCase();renderList(ctx,LANGS)});
+  renderSettingsLangs(LANGS);applyLang(code);showToast('Language: '+l.name,'success');
+}
+function applyLang(code){
+  var dict=T[code]||T['en'];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){var key=el.getAttribute('data-i18n');var val=dict[key]||(T['en'][key]||'');if(val)el.textContent=val});
+}
+
+/* AUTH */
+function doLogin(){
+  var email=document.getElementById('login-email');var btn=document.getElementById('login-btn-inner');
+  if(email&&!validateEmailStr(email.value)){markField('login-email-wrap','error');showToast('Please enter a valid email','error');return;}
+  if(btn)btn.innerHTML='<span class="spinner"></span> Authenticating…';
+  /* TODO: POST /auth/login → { email, password } */
+  setTimeout(function(){
+    if(btn)btn.innerHTML='<i class="ti ti-login"></i> Sign In to Sentinel';
+    var u=email?email.value:'User126@email.com';
+    var lbl=document.getElementById('home-user-label');if(lbl)lbl.textContent=u;
+    navHistory=[];goTo('sc-home');showToast('Welcome back! 👋','success');
+  },900);
+}
+function doRegister(){
+  if(!document.getElementById('terms-check').checked){showToast('Please accept terms & conditions','error');return;}
+  var btn=document.querySelector('#sc-register .login-btn');if(btn)btn.innerHTML='<span class="spinner"></span> Creating account…';
+  /* TODO: POST /auth/register */
+  setTimeout(function(){if(btn)btn.innerHTML='<i class="ti ti-user-plus"></i> Create Account';navHistory=[];goTo('sc-home');showToast('Account created! Welcome 🎉','success');},1000);
+}
+function doNewRegister(){
+  if(!document.getElementById('newreg-terms').checked){showToast('Please accept terms & conditions','error');return;}
+  var btn=document.querySelector('#sc-newreg .login-btn');if(btn)btn.innerHTML='<span class="spinner"></span> Registering…';
+  /* TODO: POST /auth/new-reg */
+  setTimeout(function(){if(btn)btn.innerHTML='<i class="ti ti-robot"></i> Register Sentinel Agent';navHistory=[];goTo('sc-home');showToast('Sentinel agent registered! ✅','success');},1000);
+}
+
+/* FORGOT PASSWORD */
+function sendForgotOTP(){
+  var em=document.getElementById('fp-email');if(!em||!validateEmailStr(em.value)){markField('fp-email-wrap','error');showToast('Enter a valid email','error');return;}
+  document.querySelectorAll('.fp-step').forEach(function(s){s.classList.remove('active')});document.getElementById('fp-step2').classList.add('active');
+  var sub=document.getElementById('fp-otp-sub');if(sub)sub.textContent='OTP sent to '+em.value;
+  showToast('Reset link sent to '+em.value,'success');
+}
+function verifyForgotOTP(){
+  var boxes=document.querySelectorAll('#fp-otp-inputs .otp-box');var otp='';boxes.forEach(function(b){otp+=b.value});
+  if(otp.length<6){showToast('Enter complete OTP','error');return;}
+  document.querySelectorAll('.fp-step').forEach(function(s){s.classList.remove('active')});document.getElementById('fp-step3').classList.add('active');
+  showToast('OTP verified!','success');
+}
+function resetPassword(){
+  var np=document.getElementById('fp-newpass');var cp=document.getElementById('fp-confirmpass');
+  if(!np||np.value.length<8){showToast('Min 8 characters required','error');return;}
+  if(np.value!==cp.value){showToast('Passwords do not match','error');return;}
+  showToast('Password reset! ✅','success');
+  setTimeout(function(){navHistory=[];goTo('sc-login');},1200);
+}
+function validatePassStrength2(){
+  var inp=document.getElementById('fp-newpass');if(!inp)return;
+  var v=inp.value;var w=document.getElementById('strength-wrap2');var f=document.getElementById('strength-fill2');var t=document.getElementById('strength-txt2');
+  if(!v){if(w)w.style.display='none';return;}if(w)w.style.display='block';
+  var score=0;if(v.length>=8)score++;if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^A-Za-z0-9]/.test(v))score++;
+  var labels=['Weak','Fair','Good','Strong'],colors=['#ff3344','#ff8800','#ffcc00','#00cc77'],pct=[25,50,75,100];
+  if(f){f.style.width=(pct[score-1]||5)+'%';f.style.background=colors[score-1]||'#ff3344';}
+  if(t){t.textContent=labels[score-1]||'Too Short';t.style.color=colors[score-1]||'#ff3344';}
+}
+
+/* SECURE MODAL */
+function openSecureModal(action){
+  pendingAction=action;
+  var ico=document.getElementById('sv-ico'),tit=document.getElementById('sv-title'),desc=document.getElementById('sv-desc'),warn=document.getElementById('sv-warning'),lbl=document.getElementById('sv-confirm-lbl'),inp=document.getElementById('sv-type-input');
+  var configs={erase:{icon:'ti-trash',color:'var(--red)',title:'Erase Device Data?',desc:'All data permanently deleted.',warn:'⚠️ Irreversible. All device data, settings & history will be wiped.',lbl:'Type ERASE to proceed',ph:'Type ERASE…'},logout:{icon:'ti-logout',color:'var(--orange)',title:'Logout Device?',desc:'You will be signed out.',warn:'⚠️ Security notification sent to emergency contacts.',lbl:'Type LOGOUT to proceed',ph:'Type LOGOUT…'},lock:{icon:'ti-lock',color:'var(--orange)',title:'Lock Device?',desc:'Device will be locked remotely.',warn:'⚠️ Locked immediately. Security alert dispatched.',lbl:'Type LOCK to proceed',ph:'Type LOCK…'}};
+  var cfg=configs[action]||configs.lock;
+  if(ico){ico.className='ti '+cfg.icon;ico.style.color=cfg.color;}
+  if(tit)tit.textContent=cfg.title;if(desc)desc.textContent=cfg.desc;if(warn)warn.textContent=cfg.warn;if(lbl)lbl.textContent=cfg.lbl;if(inp){inp.value='';inp.placeholder=cfg.ph;}
+  var btn=document.getElementById('sv-next-btn');if(btn){btn.disabled=true;btn.style.opacity='.4';btn.style.cursor='not-allowed';}
+  setSvStep(1);document.getElementById('secure-modal').classList.add('open');
+}
+function closeSecureModal(){document.getElementById('secure-modal').classList.remove('open');pendingAction=null;}
+function setSvStep(n){
+  for(var i=1;i<=4;i++){var s=document.getElementById('sv-step'+i);if(s)s.className='sec-step'+(i===n?' active':'')}
+  var s3a=document.getElementById('sv-step3a'),s3b=document.getElementById('sv-step3b');
+  if(s3a)s3a.className='sec-step';if(s3b)s3b.className='sec-step';
+}
+function checkConfirmWord(){
+  var inp=document.getElementById('sv-type-input');var btn=document.getElementById('sv-next-btn');
+  var exp=pendingAction==='erase'?'ERASE':(pendingAction==='logout'?'LOGOUT':'LOCK');
+  var ok=inp.value.trim().toUpperCase()===exp;
+  btn.disabled=!ok;btn.style.opacity=ok?'1':'.4';btn.style.cursor=ok?'pointer':'not-allowed';
+}
+function goToVerifyStep(){setSvStep(2)}
+function chooseBiometric(){
+  document.getElementById('sv-step2').className='sec-step';document.getElementById('sv-step3a').className='sec-step active';
+  var status=document.getElementById('sv-bio-status');if(status)status.textContent='';
+  var steps=['Scanning…','Reading biometric…','Verifying…'];var i=0;
+  var t=setInterval(function(){if(status)status.textContent=steps[i]||'';i++;if(i>=steps.length){clearInterval(t);setTimeout(function(){if(status)status.textContent='✅ Biometric verified!';setTimeout(showSuccessStep,600)},500);}},700);
+}
+function chooseOTP(){document.getElementById('sv-step2').className='sec-step';document.getElementById('sv-step3b').className='sec-step active';clearOtpBoxes('sv');showToast('OTP sent to your email','success')}
+function verifySecureOTP(){
+  var boxes=document.querySelectorAll('#sv-otp-inputs .otp-box');var otp='';boxes.forEach(function(b){otp+=b.value});
+  if(otp.length<6){showToast('Enter complete OTP','error');return;}
+  showSuccessStep();
+}
+function showSuccessStep(){
+  var st=document.getElementById('sv-success-tit');if(st){var names={erase:'Data Erased',logout:'Logged Out',lock:'Device Locked'};st.textContent=names[pendingAction]||'Action Executed';}
+  var cnt=document.getElementById('sv-contact-count');if(cnt)cnt.textContent=emergencyContacts.filter(function(c){return c.status!=='pending'}).length;
+  var ts=document.getElementById('sv-timestamp');if(ts)ts.textContent=new Date().toLocaleTimeString();
+  setSvStep(4);
+}
+function executeAction(){
+  var action=pendingAction;closeSecureModal();
+  var msgs={erase:'Data erased. Alerts sent.',logout:'Logged out. Security alert sent.',lock:'Device locked. Alert sent.'};
+  showToast(msgs[action]||'Action completed','success');
+  if(action==='logout'){setTimeout(function(){navHistory=[];goTo('sc-login');},800);}
+}
+
+/* ROUTINES */
+function renderRoutines(){
+  var c=document.getElementById('routines-list');if(!c)return;c.innerHTML='';
+  var icons={w:'briefcase',f:'target',h:'home',c:'stars'};
+  routines.forEach(function(r){
+    var d=document.createElement('div');d.className='routine-item';
+    d.innerHTML='<div class="ri-icon ri-'+r.type+'"><i class="ti ti-'+(icons[r.type]||'clock')+'"></i></div><div class="ri-info"><div class="ri-name">'+r.name+'</div><div class="ri-time">'+r.time+(r.desc?' · '+r.desc:'')+'</div></div><button class="tog '+(r.enabled?'on':'off')+'" onclick="toggleRoutine('+r.id+')"></button>';
+    c.appendChild(d);
+  });
+}
+function toggleRoutine(id){var r=routines.find(function(x){return x.id===id});if(r){r.enabled=!r.enabled;renderRoutines();showToast(r.name+' '+(r.enabled?'enabled':'disabled'),'success');}}
+function selectMode(btn){document.querySelectorAll('.mode-opt').forEach(function(b){b.className='mode-opt'});selectedMode=btn.getAttribute('data-mode');btn.className='mode-opt sel-'+selectedMode;}
+function toggleDay(btn){btn.classList.toggle('sel')}
+function saveNewRoutine(){
+  var n=document.getElementById('ar-name'),t=document.getElementById('ar-time'),d=document.getElementById('ar-desc');
+  if(!n||!n.value.trim()){showToast('Enter routine name','error');return;}
+  if(!t||!t.value){showToast('Set a time','error');return;}
+  var h=parseInt(t.value.split(':')[0]),m=t.value.split(':')[1],ampm=h>=12?'PM':'AM';h=h%12||12;
+  routines.push({id:Date.now(),name:n.value.trim(),time:(h<10?'0':'')+h+':'+m+' '+ampm,desc:d?d.value.trim():'',type:selectedMode,enabled:true});
+  renderRoutines();if(n)n.value='';if(t)t.value='';if(d)d.value='';
+  goBack();showToast('Routine added! ✅','success');
+}
+
+/* EMERGENCY CONTACTS */
+function renderEmergencyContacts(){
+  var list=document.getElementById('ec-list');if(!list)return;list.innerHTML='';
+  emergencyContacts.forEach(function(c){
+    var avCls=c.status==='primary'?'eca-primary':(c.status==='verified'?'eca-verified':'eca-pending');
+    var bdCls=c.status==='primary'?'ecb-primary':(c.status==='verified'?'ecb-verified':'ecb-pending');
+    var bdTxt=c.status==='primary'?'Primary':(c.status==='verified'?'✓ Verified':'⏳ Pending');
+    var del=c.status==='primary'?'':'<button class="ec-del" onclick="deleteEcContact('+c.id+')"><i class="ti ti-x"></i></button>';
+    var div=document.createElement('div');div.className='ec-contact';
+    div.innerHTML='<div class="ec-avatar '+avCls+'">'+(c.name.charAt(0).toUpperCase())+'</div><div class="ec-info"><div class="ec-email">'+c.email+'</div><div class="ec-role">'+c.role+(c.name&&c.name!=='Primary'?' · '+c.name:'')+'</div></div><span class="ec-badge '+bdCls+'">'+bdTxt+'</span>'+del;
+    list.appendChild(div);
+  });
+  var lbl=document.getElementById('ec-count-label');var v=emergencyContacts.filter(function(c){return c.status!=='pending'}).length;if(lbl)lbl.textContent=v+' contacts verified';
+}
+function showEcForm(){document.getElementById('ec-add-form').style.display='block';document.getElementById('ec-add-btn').style.display='none';document.getElementById('ec-form-step1').style.display='block';document.getElementById('ec-form-step2').style.display='none';}
+function hideEcForm(){document.getElementById('ec-add-form').style.display='none';document.getElementById('ec-add-btn').style.display='flex';}
+var pendingEcEmail='',pendingEcName='';
+function sendEcOTP(){var em=document.getElementById('ec-new-email');if(!em||!validateEmailStr(em.value)){showToast('Enter valid email','error');return;}pendingEcEmail=em.value;pendingEcName=document.getElementById('ec-new-name').value||em.value.split('@')[0];var t=document.getElementById('ec-otp-target');if(t)t.textContent=pendingEcEmail;document.getElementById('ec-form-step1').style.display='none';document.getElementById('ec-form-step2').style.display='block';clearOtpBoxes('ec');showToast('OTP sent to '+pendingEcEmail,'success');}
+function verifyEcOTP(){var boxes=document.querySelectorAll('#ec-form-step2 .otp-box');var otp='';boxes.forEach(function(b){otp+=b.value});if(otp.length<6){showToast('Enter complete OTP','error');return;}emergencyContacts.push({id:Date.now(),name:pendingEcName,email:pendingEcEmail,role:'Emergency Contact',status:'verified'});renderEmergencyContacts();hideEcForm();showToast(pendingEcEmail+' verified & added! ✅','success');}
+function deleteEcContact(id){emergencyContacts=emergencyContacts.filter(function(c){return c.id!==id});renderEmergencyContacts();showToast('Contact removed','success');}
+
+/* ACTIVE DEVICES */
+function renderActiveDevices(){
+  var c=document.getElementById('adl-device-list');if(!c)return;c.innerHTML='';
+  var icons={mobile:'device-mobile',laptop:'device-laptop',tablet:'device-ipad'};
+  var statColors={alert:'var(--red)',warning:'var(--orange)',online:'var(--green)'};
+  var statText={alert:'ALERT',warning:'WARNING',online:'ONLINE'};
+  activeDevices.forEach(function(d){
+    var div=document.createElement('div');div.className='adl-device';
+    div.innerHTML='<div class="adl-icon" style="background:linear-gradient(135deg,#001628,#001a33)"><i class="ti ti-'+(icons[d.type]||'device-mobile')+'" style="color:'+d.color+'"></i></div><div class="adl-info"><div class="adl-name">'+d.name+'</div><div class="adl-detail">'+d.detail+'</div></div><span class="adl-status" style="background:'+d.color+'22;color:'+d.color+';border:1px solid '+d.color+'44">'+statText[d.status]+'</span><button class="adl-remove" onclick="removeDevice('+d.id+')" title="Remove"><i class="ti ti-x"></i></button>';
+    c.appendChild(div);
+  });
+  var lbl=document.getElementById('device-count-label');if(lbl)lbl.textContent=activeDevices.length+' devices connected';
+}
+function removeDevice(id){activeDevices=activeDevices.filter(function(d){return d.id!==id});renderActiveDevices();showToast('Device removed','success');}
+
+/* OTP HELPERS */
+function otpNext(input,ctx){
+  if(input.value.length>=1){
+    var sel={'fp':'#fp-otp-inputs .otp-box','ec':'#ec-form-step2 .otp-box','sv':'#sv-otp-inputs .otp-box'};
+    var boxes=document.querySelectorAll(sel[ctx]||'');var idx=Array.from(boxes).indexOf(input);
+    if(idx<boxes.length-1)boxes[idx+1].focus();
+  }
+}
+function clearOtpBoxes(ctx){var sel={'fp':'#fp-otp-inputs .otp-box','ec':'#ec-form-step2 .otp-box','sv':'#sv-otp-inputs .otp-box'};document.querySelectorAll(sel[ctx]||'').forEach(function(b){b.value=''});var f=document.querySelector(sel[ctx]||'');if(f)f.focus();}
+function resendOTP(ctx){showToast('OTP resent!','success');clearOtpBoxes(ctx);}
+
+/* VALIDATION */
+function validateEmailStr(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+function markField(id,state){var w=document.getElementById(id);if(!w)return;w.classList.remove('valid','error');if(state)w.classList.add(state)}
+function validateEmail(ctx){var id=ctx+'-email-wrap';var inp=document.getElementById(ctx+'-email');if(!inp)return;markField(id,inp.value?(validateEmailStr(inp.value)?'valid':'error'):'');}
+function validateName(){var inp=document.getElementById('reg-name');markField('reg-name-wrap',inp.value.length>=2?'valid':(inp.value?'error':''))}
+function validateConfirmPass(){var p=document.getElementById('reg-pass');var cp=document.getElementById('reg-cpass');if(!p||!cp)return;markField('reg-cpass-wrap',cp.value&&cp.value===p.value?'valid':(cp.value?'error':''))}
+function validatePassStrength(){
+  var inp=document.getElementById('reg-pass');if(!inp)return;var v=inp.value;
+  var w=document.getElementById('strength-wrap');var f=document.getElementById('strength-fill');var t=document.getElementById('strength-txt');
+  if(!v){if(w)w.style.display='none';return;}if(w)w.style.display='block';
+  var score=0;if(v.length>=8)score++;if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^A-Za-z0-9]/.test(v))score++;
+  var labels=['Weak','Fair','Good','Strong'],colors=['#ff3344','#ff8800','#ffcc00','#00cc77'],pct=[25,50,75,100];
+  if(f){f.style.width=(pct[score-1]||5)+'%';f.style.background=colors[score-1]||'#ff3344';}
+  if(t){t.textContent=labels[score-1]||'Too Short';t.style.color=colors[score-1]||'#ff3344';}
+  markField('reg-pass-wrap',score>=3?'valid':(v?'error':''));
+}
+function toggleEye(inputId,iconId){var inp=document.getElementById(inputId);var ico=document.getElementById(iconId);if(!inp)return;var showing=inp.type==='text';inp.type=showing?'password':'text';if(ico)ico.className='ti '+(showing?'ti-eye':'ti-eye-off');}
+
+/* TOAST */
+var toastTimer;
+function showToast(msg,type){
+  var t=document.getElementById('toast');var m=document.getElementById('toast-msg');if(!t)return;
+  if(toastTimer)clearTimeout(toastTimer);m.textContent=msg;t.className='toast show '+(type||'');
+  toastTimer=setTimeout(function(){t.className='toast';},2500);
+}
+
+/* CLOCK */
+function updateClock(){
+  var now=new Date();var h=now.getHours(),mi=now.getMinutes();var ampm=h>=12?'PM':'AM';h=h%12||12;
+  var str=(h<10?'0':'')+h+':'+(mi<10?'0':'')+mi+' '+ampm;
+  var el=document.getElementById('live-clock');if(el)el.textContent=str;
+  document.querySelectorAll('.live-clock-d').forEach(function(e){e.textContent=str});
+}
+</script>
+</body>
+</html>
